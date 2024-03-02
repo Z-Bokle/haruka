@@ -1,0 +1,12 @@
+{
+  "name": "haruka",
+  "version": "1.0.0",
+  "description": "新闻生成工具前后端",
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "scripts": {
+    "dev:fe": "cd ./packages/haruka-frontend && pnpm run dev",
+    "dev:be": "cd ./packages/haruka-backend && pnpm run start:dev"
+  }
+}
