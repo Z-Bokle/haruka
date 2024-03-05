@@ -1,9 +1,19 @@
-import { Body, Controller, Post, Res, UseGuards } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Headers,
+  Post,
+  Res,
+  UseGuards,
+} from '@nestjs/common';
 import { UserService } from './user.service';
 import { Response } from 'express';
 import { UserDto } from './user.dto';
 import { Public } from 'src/decorators/public.decorator';
 import { LocalAuthGuard } from 'src/guards/guards';
+import { ApiHeader } from '@nestjs/swagger';
+import { Request } from 'express';
 
 @Controller('user')
 export class UserController {
@@ -38,5 +48,23 @@ export class UserController {
       message: '登录成功',
       token,
     });
+  }
+
+  @Get('info')
+  @ApiHeader({
+    name: 'User-ID',
+    required: false,
+  })
+  @ApiHeader({
+    name: 'User-Name',
+    required: false,
+  })
+  async getUserInfo(@Headers() headers: Request['headers']) {
+    const userIdStr = headers['User-ID'] as string;
+    const result = {
+      userId: userIdStr ? parseInt(userIdStr) : null,
+      userName: headers['User-Name'],
+    };
+    return result;
   }
 }

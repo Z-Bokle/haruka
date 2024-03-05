@@ -10,6 +10,10 @@ import {
   WrongPasswordException,
 } from 'src/exceptions/exceptions';
 
+export interface JwtPayload {
+  userName: string;
+}
+
 @Injectable()
 export class UserService {
   constructor(
@@ -43,7 +47,7 @@ export class UserService {
    * 仅获取jwt token，查表验证由LocalAuthGuard负责
    */
   async login(userName: string) {
-    const payload = {
+    const payload: JwtPayload = {
       userName: userName,
     };
 

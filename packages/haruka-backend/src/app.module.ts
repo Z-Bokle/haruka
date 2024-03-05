@@ -7,12 +7,16 @@ import {
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { UserModule } from './user/user.module';
 import { APP_GUARD, APP_INTERCEPTOR } from '@nestjs/core';
-import { TextService } from './text/text.service';
 import { TextModule } from './text/text.module';
 import { JwtAuthGuard } from './guards/guards';
 import { LoggerMiddleware } from './middlewares/logger.middleware';
 import { SessionModule } from './session/session.module';
 import { ResponseInterceptor } from './interceptors/response.interceptor';
+import { AudioModule } from './audio/audio.module';
+import { TaskModule } from './task/task.module';
+import { JwtDecodeMiddleware } from './middlewares/jwtdecode.middleware';
+import { JwtService } from '@nestjs/jwt';
+import { User } from './entities/user.entity';
 
 @Module({
   imports: [
@@ -21,9 +25,13 @@ import { ResponseInterceptor } from './interceptors/response.interceptor';
       database: './database/database.db',
       entities: [__dirname + '/**/*.entity{.ts,.js}'],
     }),
+    // 给中间件使用
+    TypeOrmModule.forFeature([User]),
     UserModule,
     TextModule,
     SessionModule,
+    AudioModule,
+    TaskModule,
   ],
   controllers: [],
   providers: [
@@ -47,11 +55,13 @@ import { ResponseInterceptor } from './interceptors/response.interceptor';
       // 全局格式化拦截器，用于格式化返回的结构
       useClass: ResponseInterceptor,
     },
-    TextService,
+    // 给中间件使用
+    JwtService,
   ],
 })
 export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
     consumer.apply(LoggerMiddleware).forRoutes('*');
+    consumer.apply(JwtDecodeMiddleware).forRoutes('*');
   }
 }

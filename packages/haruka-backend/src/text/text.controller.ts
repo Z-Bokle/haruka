@@ -27,7 +27,7 @@ export class TextController {
   }
 
   // 生成文本
-  @Post('generate/text')
+  @Post('generate')
   @ApiResponse({ type: GenerateTextVO })
   async generateText(@Body() body: GenerateTextDTO) {
     const text = await this.textService.generateText(body);

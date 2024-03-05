@@ -12,6 +12,7 @@ import { JwtStrategy } from './jwt.strategy';
 @Module({
   controllers: [UserController],
   providers: [UserService, LocalStrategy, JwtStrategy],
+  exports: [UserService],
   imports: [
     PassportModule.register({ defaultStrategy: 'jwt' }),
     TypeOrmModule.forFeature([User]),
