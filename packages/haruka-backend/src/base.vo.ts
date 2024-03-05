@@ -1,9 +1,9 @@
 import { ApiProperty } from '@nestjs/swagger';
 
 export class BaseVO {
-  @ApiProperty({ description: '错误码' })
+  @ApiProperty({ description: '错误码', type: String })
   errorCode: number | string | null;
-  @ApiProperty({ description: '错误信息' })
+  @ApiProperty({ description: '错误信息', type: String })
   errorMessage: string | null;
   @ApiProperty({ description: '数据' })
   data: any;

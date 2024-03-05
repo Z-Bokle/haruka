@@ -1,11 +1,18 @@
-import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
+import {
+  ClassSerializerInterceptor,
+  MiddlewareConsumer,
+  Module,
+  NestModule,
+} from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { UserModule } from './user/user.module';
-import { APP_GUARD } from '@nestjs/core';
+import { APP_GUARD, APP_INTERCEPTOR } from '@nestjs/core';
 import { TextService } from './text/text.service';
 import { TextModule } from './text/text.module';
 import { JwtAuthGuard } from './guards/guards';
 import { LoggerMiddleware } from './middlewares/logger.middleware';
+import { SessionModule } from './session/session.module';
+import { ResponseInterceptor } from './interceptors/response.interceptor';
 
 @Module({
   imports: [
@@ -16,6 +23,7 @@ import { LoggerMiddleware } from './middlewares/logger.middleware';
     }),
     UserModule,
     TextModule,
+    SessionModule,
   ],
   controllers: [],
   providers: [
@@ -28,6 +36,16 @@ import { LoggerMiddleware } from './middlewares/logger.middleware';
       */
       provide: APP_GUARD,
       useClass: JwtAuthGuard,
+    },
+    {
+      provide: APP_INTERCEPTOR,
+      // 全局序列化拦截器，用于屏蔽一些不该返回给用户的字段
+      useClass: ClassSerializerInterceptor,
+    },
+    {
+      provide: APP_INTERCEPTOR,
+      // 全局格式化拦截器，用于格式化返回的结构
+      useClass: ResponseInterceptor,
     },
     TextService,
   ],
