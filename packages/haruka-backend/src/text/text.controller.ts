@@ -1,8 +1,7 @@
-import { Body, Controller, Get, Post, Res } from '@nestjs/common';
+import { Body, Controller, Get, Post } from '@nestjs/common';
 import { ApiResponse } from '@nestjs/swagger';
 import { GenerateTextVO, ModelListVO, PrePromptListVO } from './text.vo';
 import { GenerateTextDTO } from './text.dto';
-import { Response } from 'express';
 import { TextService } from './text.service';
 
 @Controller('text')

@@ -3,6 +3,7 @@ import { SessionController } from './session.controller';
 import { SessionService } from './session.service';
 
 @Module({
-  providers: [SessionController, SessionService],
+  controllers: [SessionController],
+  providers: [SessionService],
 })
 export class SessionModule {}

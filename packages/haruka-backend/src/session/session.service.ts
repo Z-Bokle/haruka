@@ -1,4 +1,8 @@
 import { Injectable } from '@nestjs/common';
 
 @Injectable()
-export class SessionService {}
+export class SessionService {
+  async findAll() {
+    return [];
+  }
+}
