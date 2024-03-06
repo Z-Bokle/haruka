@@ -14,6 +14,13 @@ export enum TaskStatus {
   FAILED,
 }
 
+export interface TextTaskConfig {
+  prompt: string;
+  apiKey: string | null;
+  endpoint: string;
+  modelName: string;
+}
+
 export interface AudioTaskResult {
   audioUUID: string;
   audioFilePath: string;
@@ -71,11 +78,16 @@ export class Task<T> {
 export class TextTask extends Task<string> {
   private prompt: string;
   private apiKey: string | null;
+  private endpoint: string;
+  private modelName: string;
 
-  constructor(uuid: string, prompt: string, apiKey: string | null) {
+  constructor(uuid: string, config: TextTaskConfig) {
     super(uuid, TaskType.TEXT);
+    const { prompt, apiKey, endpoint, modelName } = config;
     this.prompt = prompt;
     this.apiKey = apiKey;
+    this.endpoint = endpoint;
+    this.modelName = modelName;
   }
 
   async doTask() {

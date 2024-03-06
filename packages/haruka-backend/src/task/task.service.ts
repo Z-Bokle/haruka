@@ -1,12 +1,12 @@
 import { Injectable } from '@nestjs/common';
-import { AudioTask, TextTask, VideoTask } from './task';
+import { AudioTask, TextTask, TextTaskConfig, VideoTask } from './task';
 import { getUUID } from 'src/utils/uuid';
 
 @Injectable()
 export class TaskService {
-  async doTextTask(prompt: string, apiKey: string | null) {
+  async doTextTask(config: TextTaskConfig) {
     const uuid = getUUID();
-    const task = new TextTask(uuid, prompt, apiKey);
+    const task = new TextTask(uuid, config);
     const result = await task.run();
     return result;
   }
