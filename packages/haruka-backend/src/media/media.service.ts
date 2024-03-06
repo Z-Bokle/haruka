@@ -2,11 +2,19 @@ import { Injectable } from '@nestjs/common';
 import { TaskService } from 'src/task/task.service';
 
 @Injectable()
-export class AudioService {
+export class MediaService {
   constructor(private readonly taskService: TaskService) {}
 
   async generateAudio(text: string) {
     const result = await this.taskService.doAudioTask(text);
+    return result;
+  }
+
+  async generateVideo(baseVideoFilePath: string, audioFilePath: string) {
+    const result = await this.taskService.doVideoTask(
+      baseVideoFilePath,
+      audioFilePath,
+    );
     return result;
   }
 

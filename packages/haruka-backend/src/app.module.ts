@@ -12,7 +12,7 @@ import { JwtAuthGuard } from './guards/guards';
 import { LoggerMiddleware } from './middlewares/logger.middleware';
 import { SessionModule } from './session/session.module';
 import { ResponseInterceptor } from './interceptors/response.interceptor';
-import { AudioModule } from './audio/audio.module';
+import { MediaModule } from './media/media.module';
 import { TaskModule } from './task/task.module';
 import { JwtDecodeMiddleware } from './middlewares/jwtdecode.middleware';
 import { JwtService } from '@nestjs/jwt';
@@ -30,7 +30,7 @@ import { User } from './entities/user.entity';
     UserModule,
     TextModule,
     SessionModule,
-    AudioModule,
+    MediaModule,
     TaskModule,
   ],
   controllers: [],
