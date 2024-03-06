@@ -14,6 +14,7 @@ import { Public } from 'src/decorators/public.decorator';
 import { LocalAuthGuard } from 'src/guards/guards';
 import { ApiHeader } from '@nestjs/swagger';
 import { Request } from 'express';
+import { UserNotFoundException } from 'src/exceptions/exceptions';
 
 @Controller('user')
 export class UserController {
@@ -59,7 +60,12 @@ export class UserController {
     name: 'User-Name',
     required: false,
   })
+  @Public()
   async getUserInfo(@Headers() headers: Request['headers']) {
+    const token = headers['Authorization'] as string;
+    if (!token) {
+      throw new UserNotFoundException();
+    }
     const userIdStr = headers['User-ID'] as string;
     const result = {
       userId: userIdStr ? parseInt(userIdStr) : null,

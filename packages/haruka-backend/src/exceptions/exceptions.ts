@@ -17,7 +17,7 @@ export class RegisterFailException extends BaseHttpException {
 
 export class UserNotFoundException extends BaseHttpException {
   constructor() {
-    super('未找到用户');
+    super('未找到用户或未登录');
     this.errorCode = 602;
   }
 }
