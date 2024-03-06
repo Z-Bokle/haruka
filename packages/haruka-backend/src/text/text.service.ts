@@ -49,13 +49,14 @@ export class TextService {
       throw new UnexpectedPromptException();
     }
 
-    const { modelName, endpoint } = modelInfo;
+    const { modelName, endpoint, scriptFileName } = modelInfo;
 
     const text = await this.taskService.doTextTask({
       prompt,
       apiKey,
       modelName,
       endpoint,
+      scriptFileName,
     });
 
     // 第一次生成，则更新Session步骤

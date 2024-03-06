@@ -1,5 +1,7 @@
 import { NotImplementedException } from '@nestjs/common';
 import { getUUID } from 'src/utils/uuid';
+import { execFile } from 'child_process';
+import { posix } from 'path';
 
 export enum TaskType {
   TEXT,
@@ -19,6 +21,7 @@ export interface TextTaskConfig {
   apiKey: string | null;
   endpoint: string;
   modelName: string;
+  scriptFileName: string;
 }
 
 export interface AudioTaskResult {
@@ -80,26 +83,57 @@ export class TextTask extends Task<string> {
   private apiKey: string | null;
   private endpoint: string;
   private modelName: string;
+  private scriptFileName: string;
 
   constructor(uuid: string, config: TextTaskConfig) {
     super(uuid, TaskType.TEXT);
-    const { prompt, apiKey, endpoint, modelName } = config;
+    const { prompt, apiKey, endpoint, modelName, scriptFileName } = config;
     this.prompt = prompt;
     this.apiKey = apiKey;
     this.endpoint = endpoint;
     this.modelName = modelName;
+    this.scriptFileName = scriptFileName;
+  }
+
+  protected runScript() {
+    // const { onOut, onErr } = callbacks;
+
+    return new Promise<string>((resolve, reject) => {
+      const scriptFilePath = posix.join('scripts', this.scriptFileName);
+      const props = [
+        this.prompt,
+        this.apiKey ?? '',
+        this.endpoint,
+        this.modelName,
+      ];
+
+      console.log(props);
+
+      try {
+        const cp = execFile('bash', [scriptFilePath, ...props]);
+
+        cp.stdout?.on('data', (out) => {
+          resolve(out);
+        });
+        cp.stderr?.on('data', (err) => {
+          reject(err);
+        });
+      } catch (error) {
+        reject(error);
+      }
+    });
   }
 
   async doTask() {
-    console.log(
-      'Text task',
-      this.prompt,
-      this.apiKey,
-      this.endpoint,
-      this.modelName,
-    );
-    const result = '大模型返回的结果';
-    return result;
+    try {
+      const result = await this.runScript();
+      return result;
+    } catch (error) {
+      console.error(error);
+      // 必须在这里把异常处理，否则服务器将卡死，无法再处理任何请求
+      // throw new ScriptRuntimeException(error.message);
+    }
+    return '';
   }
 }
 

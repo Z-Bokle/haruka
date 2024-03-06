@@ -1,4 +1,4 @@
 node_modules
 statics
 dist
-*.db
+/packages/haruka-backend/**/*.db

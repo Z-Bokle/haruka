@@ -70,3 +70,10 @@ export class ModelNotFoundException extends BaseHttpException {
     this.errorCode = 609;
   }
 }
+
+export class ScriptRuntimeException extends BaseHttpException {
+  constructor(message?: string) {
+    super(`脚本运行异常\n${message ?? '请检查脚本是否正确'}`);
+    this.errorCode = 610;
+  }
+}
