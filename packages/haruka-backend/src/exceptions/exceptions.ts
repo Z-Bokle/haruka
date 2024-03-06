@@ -63,3 +63,10 @@ export class AssetsLostException extends BaseHttpException {
     this.errorCode = 608;
   }
 }
+
+export class ModelNotFoundException extends BaseHttpException {
+  constructor() {
+    super('模型不存在');
+    this.errorCode = 609;
+  }
+}

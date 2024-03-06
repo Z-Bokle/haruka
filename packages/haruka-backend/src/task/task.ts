@@ -91,7 +91,13 @@ export class TextTask extends Task<string> {
   }
 
   async doTask() {
-    console.log('Text task', this.prompt, this.apiKey);
+    console.log(
+      'Text task',
+      this.prompt,
+      this.apiKey,
+      this.endpoint,
+      this.modelName,
+    );
     const result = '大模型返回的结果';
     return result;
   }

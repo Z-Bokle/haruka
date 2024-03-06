@@ -16,6 +16,11 @@ export class Model {
   @Column({ name: 'model_endpoint' })
   @Exclude()
   endpoint: string;
+
+  @ApiProperty({ description: '脚本文件名' })
+  @Column({ name: 'script_file_name' })
+  @Exclude()
+  scriptFileName: string;
 }
 
 @Entity()

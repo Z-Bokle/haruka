@@ -3,6 +3,7 @@ import { UpdateItemsDTO } from './text.dto';
 import { TaskService } from 'src/task/task.service';
 import { SessionService } from 'src/session/session.service';
 import {
+  ModelNotFoundException,
   SessionNotFoundException,
   UnexpectedPromptException,
   UnexpectedSessionStatusException,
@@ -34,13 +35,28 @@ export class TextService {
       throw new UnexpectedSessionStatusException();
     }
 
-    const { prompt, apiKey } = session;
+    const { prompt, apiKey, modelId } = session;
+
+    const modelInfo = await this.modelRepository.findOne({
+      where: { modelId: modelId },
+    });
+
+    if (!modelInfo) {
+      throw new ModelNotFoundException();
+    }
 
     if (!prompt) {
       throw new UnexpectedPromptException();
     }
 
-    const text = await this.taskService.doTextTask(prompt, apiKey);
+    const { modelName, endpoint } = modelInfo;
+
+    const text = await this.taskService.doTextTask({
+      prompt,
+      apiKey,
+      modelName,
+      endpoint,
+    });
 
     // 第一次生成，则更新Session步骤
     if (session.step === 0) {
