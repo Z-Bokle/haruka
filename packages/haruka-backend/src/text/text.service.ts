@@ -4,6 +4,7 @@ import { TaskService } from 'src/task/task.service';
 import { SessionService } from 'src/session/session.service';
 import {
   SessionNotFoundException,
+  UnexpectedPromptException,
   UnexpectedSessionStatusException,
 } from 'src/exceptions/exceptions';
 
@@ -20,12 +21,23 @@ export class TextService {
     if (!session) {
       throw new SessionNotFoundException();
     }
+
+    if (session.step !== 0 && session.step !== 1) {
+      // 不处于可以生成文本的状态
+      throw new UnexpectedSessionStatusException();
+    }
+
     const { prompt, apiKey } = session;
+
+    if (!prompt) {
+      throw new UnexpectedPromptException();
+    }
+
     const text = await this.taskService.doTextTask(prompt, apiKey);
 
     // 第一次生成，则更新Session步骤
     if (session.step === 0) {
-      const result = await this.sessionService.updateSessionStep(
+      const { result } = await this.sessionService.updateSessionStep(
         userId,
         sessionUUID,
         1,
@@ -57,13 +69,28 @@ export class TextService {
     return [];
   }
 
+  // 更新文本表单项
   async updateItems(userId: number, updateItemsDTO: UpdateItemsDTO) {
     const { sessionUUID, ...restProps } = updateItemsDTO;
+
+    const session = await this.sessionService.findOne(sessionUUID, userId);
+    if (!session) {
+      throw new SessionNotFoundException();
+    }
+
+    if (session.step !== 0 && session.step !== 1) {
+      // 不处于可以生成文本的状态
+      throw new UnexpectedSessionStatusException();
+    }
+
     const result = await this.sessionService.updateSession(
       userId,
       sessionUUID,
       restProps,
     );
+    if (!result) {
+      throw new UnexpectedSessionStatusException();
+    }
     return result;
   }
 }

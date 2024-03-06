@@ -87,7 +87,11 @@ export class MediaController {
       throw new SessionNotFoundException();
     }
 
-    await this.mediaService.uploadFile(file, userIdStr as string, sessionUUID);
-    return true;
+    const result = await this.mediaService.uploadFile(
+      file,
+      userIdStr as string,
+      sessionUUID,
+    );
+    return result;
   }
 }

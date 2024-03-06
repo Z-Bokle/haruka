@@ -47,39 +47,39 @@ export class Session {
 
   /** 文本部分 */
   @ApiProperty({ example: 1, description: '当前会话的模型id' })
-  @Column({ name: 'model_id' })
+  @Column({ name: 'model_id', nullable: true })
   modelId: number;
 
   @ApiProperty({
     example: '请生成一段有关...',
     description: '当前会话的提示词',
   })
-  @Column({ name: 'prompt' })
+  @Column({ name: 'prompt', nullable: true })
   prompt: string;
 
   @ApiProperty({ description: '调用文本模型需要的API Key', type: String })
-  @Column({ name: 'api_key' })
+  @Column({ name: 'api_key', nullable: true })
   apiKey: string;
 
   @ApiProperty({
     example: '新闻的内容是...',
     description: '当前会话来自大模型生成的文本内容',
   })
-  @Column({ name: 'text' })
+  @Column({ name: 'text', nullable: true })
   text: string;
   /** 音频部分 */
   @ApiProperty({
     example: '00a6fa25-df29-4701-9077-557932591766',
     description: '当前会话的音频UUID',
   })
-  @Column({ name: 'audio_uuid' })
+  @Column({ name: 'audio_uuid', nullable: true })
   audioUUID: string;
 
   @ApiProperty({
     example: '/audio/00a6fa25-df29-4701-9077-557932591766.wav',
     description: '生成音频的文件路径',
   })
-  @Column({ name: 'audio_file_path' })
+  @Column({ name: 'audio_file_path', nullable: true })
   @Exclude()
   audioFilePath: string;
 
@@ -88,21 +88,21 @@ export class Session {
     example: '00a6fa25-df29-4701-9077-557932591766',
     description: '当前会话的生成视频UUID',
   })
-  @Column({ name: 'video_uuid' })
+  @Column({ name: 'video_uuid', nullable: true })
   videoUUID: string;
 
   @ApiProperty({
     example: '/video/00a6fa25-df29-4701-9077-557932591766.mp4',
     description: '生成视频的文件路径',
   })
-  @Column({ name: 'video_file_path' })
+  @Column({ name: 'video_file_path', nullable: true })
   @Exclude()
   videoFilePath: string;
 
   @ApiProperty({
     example: '/baseVideo/00a6fa25-df29-4701-9077-557932591766.mp4',
   })
-  @Column({ name: 'base_video_file_path' })
+  @Column({ name: 'base_video_file_path', nullable: true })
   @Exclude()
   baseVideoFilePath: string;
 }

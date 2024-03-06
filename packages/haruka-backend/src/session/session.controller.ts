@@ -5,7 +5,7 @@ import {
   SessionNotFoundException,
   UserNotFoundException,
 } from 'src/exceptions/exceptions';
-import { SessionRemoveDTO } from './session.dto';
+import { SessionGoBackDTO, SessionRemoveDTO } from './session.dto';
 import { ApiQuery } from '@nestjs/swagger';
 
 @Controller('session')
@@ -81,6 +81,24 @@ export class SessionController {
     if (!result) {
       throw new SessionNotFoundException();
     }
+    return result;
+  }
+
+  @Post('goback')
+  async goBack(
+    @Headers() headers: Request['headers'],
+    @Body() body: SessionGoBackDTO,
+  ) {
+    const userIdStr = headers['User-ID'];
+    if (!userIdStr) {
+      throw new UserNotFoundException();
+    }
+    const uuid = body.uuid;
+
+    const userId = parseInt(userIdStr as string);
+
+    const result = await this.sessionService.sessionGoBack(userId, uuid);
+
     return result;
   }
 }

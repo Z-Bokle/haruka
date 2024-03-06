@@ -17,16 +17,42 @@ export class SessionService {
     private readonly sessionRepository: Repository<Session>,
   ) {}
 
-  async findAll(configs: Partial<Session>) {
-    const sessions = await this.sessionRepository.find({
-      where: configs,
-    });
-    return sessions;
-  }
-
   async getSessionList(userId: number) {
     const list = await this.findAll({ userId, isAvailable: 1 });
     return list;
+  }
+
+  async sessionGoBack(userId: number, uuid: string) {
+    const { result, currentStep } = await this.updateSessionStep(
+      userId,
+      uuid,
+      -1,
+    );
+
+    if (currentStep === 2) {
+      // 清除视频资源
+      await this.updateSession(userId, uuid, {
+        videoUUID: null,
+        videoFilePath: null,
+        baseVideoFilePath: null,
+      });
+    } else if (currentStep === 1) {
+      // 清除音频资源
+      await this.updateSession(userId, uuid, {
+        audioUUID: null,
+        audioFilePath: null,
+      });
+    } else if (currentStep === 0) {
+      // 清除文本资源，实际上客户端逻辑中，step为0或1时均禁用该操作，因此常规情况不会触发
+      await this.updateSession(userId, uuid, {
+        text: null,
+        prompt: null,
+        apiKey: null,
+        modelId: null,
+      });
+    }
+
+    return result;
   }
 
   async findOne(sessionUUID: string, userId: number) {
@@ -39,6 +65,13 @@ export class SessionService {
     });
 
     return session;
+  }
+
+  async findAll(configs: Partial<Session>) {
+    const sessions = await this.sessionRepository.find({
+      where: configs,
+    });
+    return sessions;
   }
 
   async createSession(userId: number) {
@@ -66,13 +99,7 @@ export class SessionService {
     return (result.affected ?? 0) > 0;
   }
 
-  async updateSession(
-    userId: number,
-    uuid: string,
-    configs: Partial<
-      Omit<Session, 'userId' | 'uuid' | 'lastModified' | 'isAvailable' | 'step'>
-    >,
-  ) {
+  async updateSession(userId: number, uuid: string, configs: any) {
     const result = await this.sessionRepository.update(
       {
         userId,
@@ -92,15 +119,23 @@ export class SessionService {
     if (!session) {
       throw new SessionNotFoundException();
     }
+
     if (session.step + stepOffset < 0 || session.step + stepOffset > 3) {
       throw new UnexpectedSessionStatusException();
     }
 
-    const result = await this.sessionRepository.increment(
+    const nextStep = (session.step + stepOffset) as 0 | 1 | 2 | 3;
+
+    const result = await this.sessionRepository.update(
       { sessionUUID: uuid },
-      'step',
-      stepOffset,
+      {
+        step: nextStep,
+        lastModified: new Date().getTime(),
+      },
     );
-    return (result.affected ?? 0) > 0;
+    return {
+      result: (result.affected ?? 0) > 0,
+      currentStep: nextStep,
+    };
   }
 }

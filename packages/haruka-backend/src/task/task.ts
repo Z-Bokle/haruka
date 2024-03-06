@@ -15,12 +15,12 @@ export enum TaskStatus {
 }
 
 export interface AudioTaskResult {
-  uuid: string;
+  audioUUID: string;
   audioFilePath: string;
 }
 
 export interface VideoTaskResult {
-  uuid: string;
+  videoUUID: string;
   videoFilePath: string;
 }
 
@@ -70,9 +70,9 @@ export class Task<T> {
 
 export class TextTask extends Task<string> {
   private prompt: string;
-  private apiKey: string;
+  private apiKey: string | null;
 
-  constructor(uuid: string, prompt: string, apiKey: string) {
+  constructor(uuid: string, prompt: string, apiKey: string | null) {
     super(uuid, TaskType.TEXT);
     this.prompt = prompt;
     this.apiKey = apiKey;
@@ -97,7 +97,7 @@ export class AudioTask extends Task<AudioTaskResult> {
   async doTask() {
     console.log('Audio task', this.text);
     const result = {
-      uuid: this.uuid,
+      audioUUID: this.uuid,
       audioFilePath: '完整路径',
     };
     return result;
@@ -118,7 +118,7 @@ export class VideoTask extends Task<VideoTaskResult> {
   async doTask() {
     console.log('Video task', this.baseVideoFilePath, this.audioFilePath);
     const result = {
-      uuid: this.uuid,
+      videoUUID: this.uuid,
       videoFilePath: '完整路径',
     };
     return result;

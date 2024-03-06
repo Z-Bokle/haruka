@@ -49,3 +49,17 @@ export class FileOversizeException extends BaseHttpException {
     this.errorCode = 606;
   }
 }
+
+export class UnexpectedPromptException extends BaseHttpException {
+  constructor() {
+    super('提示词异常');
+    this.errorCode = 607;
+  }
+}
+
+export class AssetsLostException extends BaseHttpException {
+  constructor() {
+    super('本次操作缺少必须的输入资源，请检查');
+    this.errorCode = 608;
+  }
+}

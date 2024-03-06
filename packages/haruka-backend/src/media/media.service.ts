@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 
 import { join } from 'path';
 import {
+  AssetsLostException,
   SessionNotFoundException,
   UnexpectedSessionStatusException,
 } from 'src/exceptions/exceptions';
@@ -37,7 +38,30 @@ export class MediaService {
 
     const text = session.text;
 
+    if (!text) {
+      throw new AssetsLostException();
+    }
+
     const result = await this.taskService.doAudioTask(text);
+
+    if (session.step === 1) {
+      const { result: stepResult } =
+        await this.sessionService.updateSessionStep(userId, sessionUUID, 1);
+      if (!stepResult) {
+        throw new UnexpectedSessionStatusException();
+      }
+    }
+
+    const sqlResult = await this.sessionService.updateSession(
+      userId,
+      sessionUUID,
+      result,
+    );
+
+    if (!sqlResult) {
+      throw new UnexpectedSessionStatusException();
+    }
+
     return result;
   }
 
@@ -56,10 +80,33 @@ export class MediaService {
     const baseVideoFilePath = session.baseVideoFilePath;
     const audioFilePath = session.audioFilePath;
 
+    if (!baseVideoFilePath || !audioFilePath) {
+      throw new AssetsLostException();
+    }
+
     const result = await this.taskService.doVideoTask(
       baseVideoFilePath,
       audioFilePath,
     );
+
+    if (session.step === 2) {
+      const { result: stepResult } =
+        await this.sessionService.updateSessionStep(userId, sessionUUID, 1);
+      if (!stepResult) {
+        throw new UnexpectedSessionStatusException();
+      }
+    }
+
+    const sqlResult = await this.sessionService.updateSession(
+      userId,
+      sessionUUID,
+      result,
+    );
+
+    if (!sqlResult) {
+      throw new UnexpectedSessionStatusException();
+    }
+
     return result;
   }
 
@@ -75,6 +122,17 @@ export class MediaService {
       targetPath,
       targetName: `${getUUID()}.mp4`,
     });
-    console.log('更新Session记录：', sessionUUID);
+
+    const userId = parseInt(userIdStr);
+
+    const result = await this.sessionService.updateSession(
+      userId,
+      sessionUUID,
+      {
+        baseVideoFilePath: targetPath,
+      },
+    );
+
+    return result;
   }
 }

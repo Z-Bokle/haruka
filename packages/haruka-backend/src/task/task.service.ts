@@ -4,7 +4,7 @@ import { getUUID } from 'src/utils/uuid';
 
 @Injectable()
 export class TaskService {
-  async doTextTask(prompt: string, apiKey: string) {
+  async doTextTask(prompt: string, apiKey: string | null) {
     const uuid = getUUID();
     const task = new TextTask(uuid, prompt, apiKey);
     const result = await task.run();
