@@ -61,4 +61,25 @@ export class SessionService {
     );
     return (result.affected ?? 0) > 0;
   }
+
+  async updateSession(
+    userId: number,
+    uuid: string,
+    configs: Partial<
+      Omit<Session, 'userId' | 'uuid' | 'lastModified' | 'isAvailable' | 'step'>
+    >,
+  ) {
+    const result = await this.sessionRepository.update(
+      {
+        userId,
+        sessionUUID: uuid,
+        isAvailable: 1,
+      },
+      {
+        ...configs,
+        lastModified: new Date().getTime(),
+      },
+    );
+    return (result.affected ?? 0) > 0;
+  }
 }

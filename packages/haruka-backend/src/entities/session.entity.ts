@@ -57,6 +57,10 @@ export class Session {
   @Column({ name: 'prompt' })
   prompt: string;
 
+  @ApiProperty({ description: '调用文本模型需要的API Key', type: String })
+  @Column({ name: 'api_key' })
+  apiKey: string;
+
   @ApiProperty({
     example: '新闻的内容是...',
     description: '当前会话来自大模型生成的文本内容',
