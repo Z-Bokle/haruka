@@ -15,6 +15,8 @@ export class ResponseInterceptor implements NestInterceptor {
           errorCode: 0,
           data,
           errorMessage: null,
+          message: typeof data === 'boolean' && data ? '操作成功' : null,
+          timestamp: new Date().getTime(),
         };
       }),
     );

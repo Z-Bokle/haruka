@@ -28,6 +28,8 @@ export class GlobalExceptionFilter implements ExceptionFilter {
           ? exception.message
           : '服务器异常',
       data: null,
+      timestamp: new Date().getTime(),
+      message: null,
     });
   }
 }
