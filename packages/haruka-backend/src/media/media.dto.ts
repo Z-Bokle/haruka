@@ -17,4 +17,7 @@ export class UploadBaseVideoDTO {
     format: 'binary',
   })
   file: any;
+
+  @ApiProperty({ required: true, description: '上传视频的 Session UUID' })
+  sessionUUID: string;
 }

@@ -17,7 +17,10 @@ import { FileInterceptor } from '@nestjs/platform-express';
 import { ApiBody, ApiConsumes } from '@nestjs/swagger';
 import { FileValidationPipe } from 'src/pipes/filevalidation.pipe';
 import { Request } from 'express';
-import { UserNotFoundException } from 'src/exceptions/exceptions';
+import {
+  SessionNotFoundException,
+  UserNotFoundException,
+} from 'src/exceptions/exceptions';
 
 @Controller('media')
 export class MediaController {
@@ -59,14 +62,20 @@ export class MediaController {
     @UploadedFile()
     file: Express.Multer.File,
     @Headers() headers: Request['headers'],
+    @Body() body: UploadBaseVideoDTO,
   ) {
     const userIdStr = headers['User-ID'];
+    const sessionUUID = body.sessionUUID;
 
     if (!userIdStr) {
       throw new UserNotFoundException();
     }
 
-    await this.mediaService.uploadFile(file, userIdStr as string);
+    if (!sessionUUID) {
+      throw new SessionNotFoundException();
+    }
+
+    await this.mediaService.uploadFile(file, userIdStr as string, sessionUUID);
     return true;
   }
 }

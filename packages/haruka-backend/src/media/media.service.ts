@@ -62,7 +62,11 @@ export class MediaService {
     return result;
   }
 
-  async uploadFile(file: Express.Multer.File, userIdStr: string) {
+  async uploadFile(
+    file: Express.Multer.File,
+    userIdStr: string,
+    sessionUUID: string,
+  ) {
     const targetPath = join('statics', 'uploads', userIdStr);
     FileManager.createDir(targetPath);
     await FileManager.writeFile({
@@ -70,5 +74,6 @@ export class MediaService {
       targetPath,
       targetName: `${randomUUID()}.mp4`,
     });
+    console.log('更新Session记录：', sessionUUID);
   }
 }

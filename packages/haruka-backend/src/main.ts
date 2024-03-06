@@ -3,7 +3,6 @@ import { AppModule } from './app.module';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import * as os from 'os';
 import * as cookieParser from 'cookie-parser';
-import { statSync } from 'fs';
 import { join } from 'path';
 import { FileManager } from './utils/file';
 
