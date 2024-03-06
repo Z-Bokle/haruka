@@ -1,5 +1,5 @@
 import { NotImplementedException } from '@nestjs/common';
-import { randomUUID } from 'crypto';
+import { getUUID } from 'src/utils/uuid';
 
 export enum TaskType {
   TEXT,
@@ -40,7 +40,7 @@ export class Task<T> {
   }
 
   static create(type: TaskType) {
-    const uuid = randomUUID();
+    const uuid = getUUID();
     return new this(uuid, type);
   }
 

@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { randomUUID } from 'crypto';
+
 import { join } from 'path';
 import {
   SessionNotFoundException,
@@ -8,6 +8,7 @@ import {
 import { SessionService } from 'src/session/session.service';
 import { TaskService } from 'src/task/task.service';
 import { FileManager } from 'src/utils/file';
+import { getUUID } from 'src/utils/uuid';
 
 @Injectable()
 export class MediaService {
@@ -72,7 +73,7 @@ export class MediaService {
     await FileManager.writeFile({
       file,
       targetPath,
-      targetName: `${randomUUID()}.mp4`,
+      targetName: `${getUUID()}.mp4`,
     });
     console.log('更新Session记录：', sessionUUID);
   }

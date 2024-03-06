@@ -72,7 +72,7 @@ export class Session {
 
   @ApiProperty({
     example: '/audio/00a6fa25-df29-4701-9077-557932591766.wav',
-    description: '音频的文件路径',
+    description: '生成音频的文件路径',
   })
   @Column({ name: 'audio_file_path' })
   @Exclude()

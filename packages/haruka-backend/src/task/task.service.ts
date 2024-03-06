@@ -1,30 +1,25 @@
 import { Injectable } from '@nestjs/common';
 import { AudioTask, TextTask, VideoTask } from './task';
-import { randomUUID } from 'crypto';
+import { getUUID } from 'src/utils/uuid';
 
 @Injectable()
 export class TaskService {
-  /** 分配新的UUID */
-  private static getNewUUID() {
-    return randomUUID();
-  }
-
   async doTextTask(prompt: string, apiKey: string) {
-    const uuid = TaskService.getNewUUID();
+    const uuid = getUUID();
     const task = new TextTask(uuid, prompt, apiKey);
     const result = await task.run();
     return result;
   }
 
   async doAudioTask(text: string) {
-    const uuid = TaskService.getNewUUID();
+    const uuid = getUUID();
     const task = new AudioTask(uuid, text);
     const result = await task.run();
     return result;
   }
 
   async doVideoTask(baseVideoFilePath: string, audioFilePath: string) {
-    const uuid = TaskService.getNewUUID();
+    const uuid = getUUID();
     const task = new VideoTask(uuid, baseVideoFilePath, audioFilePath);
     const result = await task.run();
     return result;
