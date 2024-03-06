@@ -7,12 +7,19 @@ import {
   UnexpectedPromptException,
   UnexpectedSessionStatusException,
 } from 'src/exceptions/exceptions';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Model, PrePrompt } from 'src/entities/text.entity';
+import { Repository } from 'typeorm';
 
 @Injectable()
 export class TextService {
   constructor(
     private readonly taskService: TaskService,
     private readonly sessionService: SessionService,
+    @InjectRepository(Model)
+    private readonly modelRepository: Repository<Model>,
+    @InjectRepository(PrePrompt)
+    private readonly prePromptRepository: Repository<PrePrompt>,
   ) {}
 
   // 调用文本大模型生成文本
@@ -61,12 +68,19 @@ export class TextService {
 
   // 查找模型列表
   async getModelList() {
-    return [];
+    const list = await this.modelRepository.find();
+    return list;
+  }
+
+  async findModelById(modelId: number) {
+    const model = await this.modelRepository.findOne({ where: { modelId } });
+    return model;
   }
 
   // 查找提示词预设方案列表
   async getPrePromptList() {
-    return [];
+    const list = await this.prePromptRepository.find();
+    return list;
   }
 
   // 更新文本表单项

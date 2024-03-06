@@ -12,7 +12,8 @@ export class Model {
   @PrimaryGeneratedColumn({ name: 'model_id' })
   modelId: number;
 
-  @Column({ name: 'endpoint' })
+  @ApiProperty({ description: '模型的endpoint' })
+  @Column({ name: 'model_endpoint' })
   @Exclude()
   endpoint: string;
 }
@@ -27,7 +28,7 @@ export class PrePrompt {
   @Column({ name: 'pre_prompt_name' })
   name: string;
 
-  @ApiProperty({ description: '提示词预设方案描述' })
-  @Column({ name: 'pre_prompt_description' })
+  @ApiProperty({ description: '提示词预设方案内容' })
+  @Column({ name: 'pre_prompt_content' })
   description: string;
 }
