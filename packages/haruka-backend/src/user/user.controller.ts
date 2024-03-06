@@ -62,11 +62,10 @@ export class UserController {
   })
   @Public()
   async getUserInfo(@Headers() headers: Request['headers']) {
-    const token = headers['Authorization'] as string;
-    if (!token) {
+    const userIdStr = headers['User-ID'] as string;
+    if (!userIdStr) {
       throw new UserNotFoundException();
     }
-    const userIdStr = headers['User-ID'] as string;
     const result = {
       userId: userIdStr ? parseInt(userIdStr) : null,
       userName: headers['User-Name'],
