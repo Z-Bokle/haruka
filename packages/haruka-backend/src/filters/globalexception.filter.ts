@@ -15,6 +15,7 @@ export class GlobalExceptionFilter implements ExceptionFilter {
     const context = host.switchToHttp();
     const response = context.getResponse<Response>();
     // const request = context.getRequest<Request>();
+
     const status =
       exception instanceof HttpException
         ? exception.getStatus()
@@ -23,10 +24,7 @@ export class GlobalExceptionFilter implements ExceptionFilter {
     response.status(status).json({
       errorCode:
         exception instanceof BaseHttpException ? exception.errorCode : status,
-      errorMessage:
-        exception instanceof BaseHttpException
-          ? exception.message
-          : '服务器异常',
+      errorMessage: exception.message ?? '服务器异常',
       data: null,
       timestamp: new Date().getTime(),
       message: null,

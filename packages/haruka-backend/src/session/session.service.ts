@@ -1,6 +1,10 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Session } from 'src/entities/session.entity';
+import {
+  SessionNotFoundException,
+  UnexpectedSessionStatusException,
+} from 'src/exceptions/exceptions';
 import { UserService } from 'src/user/user.service';
 import { getUUID } from 'src/utils/uuid';
 import { Repository } from 'typeorm';
@@ -79,6 +83,23 @@ export class SessionService {
         ...configs,
         lastModified: new Date().getTime(),
       },
+    );
+    return (result.affected ?? 0) > 0;
+  }
+
+  async updateSessionStep(userId: number, uuid: string, stepOffset: 1 | -1) {
+    const session = await this.findOne(uuid, userId);
+    if (!session) {
+      throw new SessionNotFoundException();
+    }
+    if (session.step + stepOffset < 0 || session.step + stepOffset > 3) {
+      throw new UnexpectedSessionStatusException();
+    }
+
+    const result = await this.sessionRepository.increment(
+      { sessionUUID: uuid },
+      'step',
+      stepOffset,
     );
     return (result.affected ?? 0) > 0;
   }

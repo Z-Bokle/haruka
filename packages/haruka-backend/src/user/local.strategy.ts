@@ -1,7 +1,8 @@
-import { Injectable, UnauthorizedException } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { PassportStrategy } from '@nestjs/passport';
 import { Strategy } from 'passport-local';
 import { UserService } from './user.service';
+import { UserNotFoundException } from 'src/exceptions/exceptions';
 
 @Injectable()
 export class LocalStrategy extends PassportStrategy(Strategy) {
@@ -13,7 +14,7 @@ export class LocalStrategy extends PassportStrategy(Strategy) {
     const user = await this.userService.validateUser(userName, password);
 
     if (!user) {
-      throw new UnauthorizedException();
+      throw new UserNotFoundException();
     }
     return user;
   }

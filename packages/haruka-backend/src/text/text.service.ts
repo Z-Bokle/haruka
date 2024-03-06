@@ -2,7 +2,10 @@ import { Injectable } from '@nestjs/common';
 import { UpdateItemsDTO } from './text.dto';
 import { TaskService } from 'src/task/task.service';
 import { SessionService } from 'src/session/session.service';
-import { SessionNotFoundException } from 'src/exceptions/exceptions';
+import {
+  SessionNotFoundException,
+  UnexpectedSessionStatusException,
+} from 'src/exceptions/exceptions';
 
 @Injectable()
 export class TextService {
@@ -19,6 +22,18 @@ export class TextService {
     }
     const { prompt, apiKey } = session;
     const text = await this.taskService.doTextTask(prompt, apiKey);
+
+    // 第一次生成，则更新Session步骤
+    if (session.step === 0) {
+      const result = await this.sessionService.updateSessionStep(
+        userId,
+        sessionUUID,
+        1,
+      );
+      if (!result) {
+        throw new UnexpectedSessionStatusException();
+      }
+    }
 
     return text;
   }

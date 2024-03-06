@@ -37,8 +37,8 @@ async function bootstrap() {
   app.use(cookieParser());
 
   const config = new DocumentBuilder()
-    .setTitle('NestJS')
-    .setDescription('NestJS API')
+    .setTitle('Haruka')
+    .setDescription('Haruka Backend RESTful API')
     .setVersion('1.0')
     .build();
 
