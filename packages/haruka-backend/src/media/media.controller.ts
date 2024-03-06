@@ -29,10 +29,16 @@ export class MediaController {
   @Post('audio/generate')
   async generateAudio(
     @Body() body: GenerateAudioDTO,
-    @Headers('User-ID') userIdStr: string,
+    @Headers() headers: Request['headers'],
   ) {
+    const userIdStr = headers['User-ID'];
+
+    if (!userIdStr) {
+      throw new UserNotFoundException();
+    }
+
     const sessionUUID = body.sessionUUID;
-    const userId = parseInt(userIdStr);
+    const userId = parseInt(userIdStr as string);
 
     return await this.mediaService.generateAudio(sessionUUID, userId);
   }
@@ -40,10 +46,16 @@ export class MediaController {
   @Post('video/generate')
   async generateVideo(
     @Body() body: GenerateVideoDTO,
-    @Headers('User-ID') userIdStr: string,
+    @Headers() headers: Request['headers'],
   ) {
+    const userIdStr = headers['User-ID'];
+
+    if (!userIdStr) {
+      throw new UserNotFoundException();
+    }
+
     const sessionUUID = body.sessionUUID;
-    const userId = parseInt(userIdStr);
+    const userId = parseInt(userIdStr as string);
 
     return await this.mediaService.generateVideo(sessionUUID, userId);
   }

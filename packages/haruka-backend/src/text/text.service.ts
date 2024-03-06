@@ -35,6 +35,15 @@ export class TextService {
       }
     }
 
+    const result = await this.sessionService.updateSession(
+      userId,
+      sessionUUID,
+      { text },
+    );
+    if (!result) {
+      throw new UnexpectedSessionStatusException();
+    }
+
     return text;
   }
 
