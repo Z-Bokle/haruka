@@ -6,7 +6,7 @@ import {
 } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { UserModule } from './user/user.module';
-import { APP_GUARD, APP_INTERCEPTOR } from '@nestjs/core';
+import { APP_FILTER, APP_GUARD, APP_INTERCEPTOR } from '@nestjs/core';
 import { TextModule } from './text/text.module';
 import { JwtAuthGuard } from './guards/guards';
 import { LoggerMiddleware } from './middlewares/logger.middleware';
@@ -17,6 +17,7 @@ import { TaskModule } from './task/task.module';
 import { JwtDecodeMiddleware } from './middlewares/jwtdecode.middleware';
 import { JwtService } from '@nestjs/jwt';
 import { User } from './entities/user.entity';
+import { GlobalExceptionFilter } from './filters/globalexception.filter';
 
 @Module({
   imports: [
@@ -57,6 +58,11 @@ import { User } from './entities/user.entity';
     },
     // 给中间件使用
     JwtService,
+    {
+      provide: APP_FILTER,
+      // 全局异常拦截器，用于处理未捕捉的异常，并格式化返回的结构
+      useClass: GlobalExceptionFilter,
+    },
   ],
 })
 export class AppModule implements NestModule {

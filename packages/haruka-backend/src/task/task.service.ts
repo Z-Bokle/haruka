@@ -4,6 +4,7 @@ import { randomUUID } from 'crypto';
 
 @Injectable()
 export class TaskService {
+  /** 分配新的UUID */
   private static getNewUUID() {
     return randomUUID();
   }

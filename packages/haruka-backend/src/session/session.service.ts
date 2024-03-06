@@ -17,14 +17,26 @@ export class SessionService {
   }
 
   /** 校验SessionUUID是否合法，如果UUID存在但不属于当前用户也归结为非法 */
-  async isSessionValid(sessionUUID: string, userId: number) {
+  // async isSessionValid(sessionUUID: string, userId: number) {
+  //   const session = await this.sessionRepository.findOne({
+  //     where: {
+  //       userId,
+  //       sessionUUID,
+  //     },
+  //   });
+
+  //   return !!session;
+  // }
+
+  async findOne(sessionUUID: string, userId: number) {
     const session = await this.sessionRepository.findOne({
       where: {
         userId,
         sessionUUID,
+        isAvailable: 1,
       },
     });
 
-    return !!session;
+    return session;
   }
 }

@@ -81,16 +81,23 @@ export class Session {
   /** 视频部分 */
   @ApiProperty({
     example: '00a6fa25-df29-4701-9077-557932591766',
-    description: '当前会话的视频UUID',
+    description: '当前会话的生成视频UUID',
   })
   @Column({ name: 'video_uuid' })
   videoUUID: string;
 
   @ApiProperty({
     example: '/video/00a6fa25-df29-4701-9077-557932591766.mp4',
-    description: '视频的文件路径',
+    description: '生成视频的文件路径',
   })
   @Column({ name: 'video_file_path' })
   @Exclude()
   videoFilePath: string;
+
+  @ApiProperty({
+    example: '/baseVideo/00a6fa25-df29-4701-9077-557932591766.mp4',
+  })
+  @Column({ name: 'base_video_file_path' })
+  @Exclude()
+  baseVideoFilePath: string;
 }
