@@ -17,14 +17,15 @@ export class Session {
       '该会话是否可用，1即可用，则用户可见；0即不可用，则用户不可见。用户对会话执行删除操作时将从可用变为不可用。',
   })
   @Column({ name: 'is_available' })
+  @Exclude()
   isAvailable: 0 | 1;
 
   @ApiProperty({
-    example: '2021-01-01T00:00:00.000Z',
-    description: '该会话最后一次修改时间',
+    example: 1709714333609,
+    description: '该会话最后一次修改时间的时间戳',
   })
   @Column({ name: 'last_modified' })
-  lastModified: Date;
+  lastModified: number;
 
   @ApiProperty({
     example: 1,

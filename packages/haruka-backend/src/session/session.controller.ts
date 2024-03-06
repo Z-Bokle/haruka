@@ -1,7 +1,11 @@
-import { Controller, Get, Headers, Post } from '@nestjs/common';
+import { Body, Controller, Get, Headers, Post } from '@nestjs/common';
 import { SessionService } from './session.service';
 import { Request } from 'express';
-import { UserNotFoundException } from 'src/exceptions/exceptions';
+import {
+  SessionNotFoundException,
+  UserNotFoundException,
+} from 'src/exceptions/exceptions';
+import { SessionRemoveDTO } from './session.dto';
 
 @Controller('session')
 export class SessionController {
@@ -32,5 +36,24 @@ export class SessionController {
 
     const result = await this.sessionService.createSession(userId);
     return !!result;
+  }
+
+  @Post('remove')
+  async removeSession(
+    @Headers() headers: Request['headers'],
+    @Body() body: SessionRemoveDTO,
+  ) {
+    const userIdStr = headers['User-ID'];
+    if (!userIdStr) {
+      throw new UserNotFoundException();
+    }
+
+    const userId = parseInt(userIdStr as string);
+    const uuid = body.uuid;
+    const result = await this.sessionService.removeSession(userId, uuid);
+    if (!result) {
+      throw new SessionNotFoundException();
+    }
+    return result;
   }
 }

@@ -20,18 +20,6 @@ export class SessionService {
     return sessions;
   }
 
-  /** 校验SessionUUID是否合法，如果UUID存在但不属于当前用户也归结为非法 */
-  // async isSessionValid(sessionUUID: string, userId: number) {
-  //   const session = await this.sessionRepository.findOne({
-  //     where: {
-  //       userId,
-  //       sessionUUID,
-  //     },
-  //   });
-
-  //   return !!session;
-  // }
-
   async getSessionList(userId: number) {
     const list = await this.findAll({ userId, isAvailable: 1 });
     return list;
@@ -55,7 +43,22 @@ export class SessionService {
       userId,
       isAvailable: 1,
       step: 0,
+      lastModified: new Date().getTime(),
     });
     return await this.sessionRepository.save(session);
+  }
+
+  async removeSession(userId: number, uuid: string) {
+    const result = await this.sessionRepository.update(
+      {
+        userId,
+        sessionUUID: uuid,
+        isAvailable: 1,
+      },
+      {
+        isAvailable: 0,
+      },
+    );
+    return (result.affected ?? 0) > 0;
   }
 }
