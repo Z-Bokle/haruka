@@ -1,61 +1,58 @@
 import React from 'react';
-import {
-  SafeAreaView,
-  StatusBar,
-  StyleSheet,
-  Text,
-  useColorScheme,
-} from 'react-native';
-import { Appbar } from 'react-native-paper';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
-import { Colors } from 'react-native/Libraries/NewAppScreen';
+import Home from './pages/Home';
+import Sessions from './pages/Sessions';
+import Settings from './pages/Settings';
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import { Icon } from 'react-native-paper';
 
-function Main(): React.JSX.Element {
-  const isDarkMode = useColorScheme() === 'dark';
+export type BottomTabParamList = {
+  Home: undefined;
+  Sessions: undefined;
+  Settings: undefined;
+};
 
-  const backgroundStyle = {
-    backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
-  };
+const Tab = createBottomTabNavigator<BottomTabParamList>();
 
-  const { bottom } = useSafeAreaInsets();
-
+function Navigation() {
   return (
-    <SafeAreaView style={styles.container}>
-      <StatusBar
-        barStyle={isDarkMode ? 'light-content' : 'dark-content'}
-        backgroundColor={backgroundStyle.backgroundColor}
+    <Tab.Navigator screenOptions={{ headerShown: false }}>
+      <Tab.Screen
+        name="Home"
+        component={Home}
+        options={{
+          tabBarLabel: '首页',
+          tabBarIcon: ({ color, size }) => {
+            return <Icon source="home" color={color} size={size} />;
+          },
+        }}
       />
-
-      <Text>A demo app.</Text>
-      <Appbar style={[styles.bottom]} safeAreaInsets={{ bottom }}>
-        <Appbar.Action icon="archive" onPress={() => {}} />
-        <Appbar.Action icon="email" onPress={() => {}} />
-        <Appbar.Action icon="label" onPress={() => {}} />
-        <Appbar.Action icon="delete" onPress={() => {}} />
-      </Appbar>
-    </SafeAreaView>
+      <Tab.Screen
+        name="Sessions"
+        component={Sessions}
+        options={{
+          tabBarLabel: '会话',
+          tabBarIcon: ({ color, size }) => {
+            return <Icon source="robot" color={color} size={size} />;
+          },
+        }}
+      />
+      <Tab.Screen
+        name="Settings"
+        component={Settings}
+        options={{
+          tabBarLabel: '设置',
+          tabBarIcon: ({ color, size }) => {
+            return <Icon source="cog" color={color} size={size} />;
+          },
+        }}
+      />
+    </Tab.Navigator>
   );
 }
 
-const styles = StyleSheet.create({
-  bottom: {
-    position: 'absolute',
-    backgroundColor: 'gray',
-    left: 0,
-    right: 0,
-    bottom: 0,
-  },
-  fab: {
-    position: 'absolute',
-    right: 16,
-  },
-  container: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: '#F5FCFF',
-  },
-});
+function Main() {
+  return <Navigation />;
+}
 
 export default Main;
