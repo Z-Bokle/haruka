@@ -6,9 +6,6 @@ Sora是日语中“<ruby>天<rt>そら</rt></ruby>”的一种读法，意为“
 此外，Haruka也可以表示晴朗的天空的含义，即“<ruby>晴空<rt>はるか</rt></ruby>”。
 ## 命令
 ```
-# 在开发环境下运行huruka APP
-pnpm run dev:app
-
 # 在开发环境下运行huruka后端
 pnpm run dev:be
 ```

@@ -1,12 +1,11 @@
 {
   "name": "haruka",
   "version": "1.0.0",
-  "description": "新闻生成工具Haruka前后端",
+  "description": "新闻生成工具Haruka",
   "keywords": [],
   "author": "",
   "license": "ISC",
   "scripts": {
-    "dev:be": "cd ./packages/haruka-backend && pnpm run start:dev",
-    "dev:app": "cd ./packages/HarukaApp && pnpm run android"
+    "dev:be": "cd ./packages/haruka-backend && pnpm run start:dev"
   }
 }
