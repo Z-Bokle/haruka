@@ -1,0 +1,5 @@
+rootProject.name = 'HarukaApp'
+apply from: file("../node_modules/@react-native-community/cli-platform-android/native_modules.gradle"); applyNativeModulesSettingsGradle(settings)
+include ':app'
+// 这个模块被放在了pnpm workspace的根目录的node_modules下，不在子仓库内，如果路径丢失可以尝试手动找一下这个模块的安装位置，不同版本的node以及pnpm可能表现不同
+includeBuild('../../../node_modules/@react-native/gradle-plugin')

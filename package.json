@@ -6,7 +6,7 @@
   "author": "",
   "license": "ISC",
   "scripts": {
-    "dev:fe": "cd ./packages/haruka-frontend && pnpm run dev",
-    "dev:be": "cd ./packages/haruka-backend && pnpm run start:dev"
+    "dev:be": "cd ./packages/haruka-backend && pnpm run start:dev",
+    "dev:app": "cd ./packages/HarukaApp && pnpm run android"
   }
 }
