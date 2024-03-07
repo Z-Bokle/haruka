@@ -19,7 +19,8 @@ pnpm run dev:app
 ```
 
 ## 注意
-Haruka APP使用yarn作为包管理工具，该模块不纳入pnpm workspace管理，需要操作该模块需要进入到该模块的目录中使用yarn命令。
+- Haruka APP使用yarn作为包管理工具，该模块不纳入pnpm workspace管理，需要操作该模块需要进入到该模块的目录中使用yarn命令。
+
 
 ## 环境支持
 1. nodejs v20.11.1
