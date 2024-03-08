@@ -9,6 +9,18 @@ export interface GlobalStore {
   setBaseUrl: (baseUrl: string) => void;
 }
 
+export interface ShowDialogConfigs {
+  title?: string;
+  content: string;
+}
+export interface DialogStore {
+  visible: boolean;
+  title?: string;
+  content?: string;
+  show: (configs: ShowDialogConfigs) => void;
+  hide: () => void;
+}
+
 const useGlobalStore = create<GlobalStore>(set => ({
   token: null,
   setToken: (token: string | null) => set({ token }),
@@ -18,4 +30,10 @@ const useGlobalStore = create<GlobalStore>(set => ({
   setBaseUrl: (baseUrl: string) => set({ baseUrl }),
 }));
 
-export { useGlobalStore };
+const useDialog = create<DialogStore>(set => ({
+  visible: false,
+  show: (configs: ShowDialogConfigs) => set({ visible: true, ...configs }),
+  hide: () => set({ visible: false, title: undefined, content: undefined }),
+}));
+
+export { useGlobalStore, useDialog };

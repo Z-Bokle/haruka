@@ -92,5 +92,6 @@ export const useNetwork = () => {
     jsonGet,
     jsonPost,
     formPost,
+    baseUrl,
   };
 };
