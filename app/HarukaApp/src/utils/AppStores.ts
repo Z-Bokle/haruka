@@ -2,6 +2,8 @@ import { create } from 'zustand';
 
 export interface GlobalStore {
   token: string | null;
+  setToken: (token: string | null) => void;
+  clearToken: () => void;
 }
 
 const useGlobalStore = create<GlobalStore>(set => ({
