@@ -1,14 +1,16 @@
 # Haruka APP
 Haruka ReactNative 客户端
 
-## 技术栈
-1. 核心 react-native
-2. 状态管理 zustand
-3. 页面导航 react-navigation
-4. UI组件库 react-native-paper
-5. 图标 react-native-vector-icons
-6. 网络请求 原生fetch封装
-7. 安全存储 react-native-sensitive-info
+## 第三方依赖
+1. 状态管理 zustand
+2. 页面导航 react-navigation
+3. UI组件库 react-native-paper
+4. 图标 react-native-vector-icons
+5. 网络请求 原生fetch封装
+6. 安全存储 react-native-sensitive-info
+7. 视频录制 react-native-vision-camera
+8. 视频播放 react-native-video
+9. 毛玻璃 react-native-blur
 
 ## 项目结构(仅RN部分)
 - components 组件  

@@ -1,7 +1,7 @@
 import React from 'react';
 import { View } from 'react-native';
 import { Text } from 'react-native-paper';
-import { styles } from '../../utils/StyleSheets';
+import { globalStyles } from '../../utils/StyleSheets';
 import { useGlobalStore } from '../../utils/AppStores';
 
 function Settings() {
@@ -11,7 +11,7 @@ function Settings() {
   }));
 
   return (
-    <View style={styles.container}>
+    <View style={globalStyles.container}>
       <Text onPress={() => setToken('123456')}>{token ?? 11111}</Text>
     </View>
   );
