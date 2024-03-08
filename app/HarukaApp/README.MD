@@ -1,6 +1,14 @@
 # Haruka APP
 Haruka ReactNative 客户端
 
+## 技术栈
+1. 核心 react-native
+2. 状态管理 zustand
+3. 页面导航 react-navigation
+4. UI组件库 react-native-paper
+5. 图标 react-native-vector-icons
+6. 网络请求 原生fetch封装
+
 ## 项目结构(仅RN部分)
 - components 组件  
 - pages 页面  

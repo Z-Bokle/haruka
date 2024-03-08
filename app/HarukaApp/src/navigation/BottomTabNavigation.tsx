@@ -1,7 +1,4 @@
 import React, { ReactNode, useCallback } from 'react';
-
-import Home from '../pages/Home';
-import Sessions from '../pages/Sessions';
 import Settings from '../pages/Settings';
 import {
   BottomTabBarProps,
@@ -9,6 +6,8 @@ import {
 } from '@react-navigation/bottom-tabs';
 import { BottomNavigation, Icon } from 'react-native-paper';
 import { CommonActions } from '@react-navigation/native';
+import { HomeStackNavigation } from './HomeStackNavigation';
+import { SessionsStackNavigation } from './SessionsStackNavigation';
 
 export type BottomTabParamList = {
   Home: undefined;
@@ -17,10 +16,16 @@ export type BottomTabParamList = {
 };
 
 const routes = [
-  { name: 'Home', component: Home, key: 'home', icon: 'home', label: '首页' },
+  {
+    name: 'Home',
+    component: HomeStackNavigation,
+    key: 'home',
+    icon: 'home',
+    label: '首页',
+  },
   {
     name: 'Sessions',
-    component: Sessions,
+    component: SessionsStackNavigation,
     key: 'sessions',
     icon: 'robot',
     label: '会话',

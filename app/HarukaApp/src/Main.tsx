@@ -1,8 +1,8 @@
 import React from 'react';
-import { BottomTabNavigation } from './navigation/BottonTabNavigation';
+import { GlobalStackNavigation } from './navigation/GlobalStackNavigation';
 
 function Main() {
-  return <BottomTabNavigation />;
+  return <GlobalStackNavigation />;
 }
 
 export default Main;
