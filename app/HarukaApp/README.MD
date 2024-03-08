@@ -12,7 +12,7 @@ Haruka ReactNative 客户端
 - utils 工具  
 
 ## 非业务TODO
-- [ ] 状态管理
+- [x] 状态管理
 - [ ] 路由与底部导航
   - [x] 底部导航
   - [ ] 路由
