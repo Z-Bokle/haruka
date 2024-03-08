@@ -8,6 +8,7 @@ Haruka ReactNative 客户端
 4. UI组件库 react-native-paper
 5. 图标 react-native-vector-icons
 6. 网络请求 原生fetch封装
+7. 安全存储 react-native-sensitive-info
 
 ## 项目结构(仅RN部分)
 - components 组件  
