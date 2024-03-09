@@ -8,18 +8,21 @@ const isFingerPrintAvailable = async () => {
 };
 
 const setItem = async (key: string, value: string) => {
-  const enableTouchID = await isFingerPrintAvailable();
-  return await SecurityStorage.setItem(key, value, { touchID: enableTouchID });
+  // const enableTouchID = await isFingerPrintAvailable();
+
+  return await SecurityStorage.setItem(key, value, { touchID: false });
 };
 
 const getItem = async (key: string) => {
-  const enableTouchID = await isFingerPrintAvailable();
-  return await SecurityStorage.getItem(key, { touchID: enableTouchID });
+  // const enableTouchID = await isFingerPrintAvailable();
+
+  return await SecurityStorage.getItem(key, { touchID: false });
 };
 
 const deleteItem = async (key: string) => {
-  const enableTouchID = await isFingerPrintAvailable();
-  return await SecurityStorage.deleteItem(key, { touchID: enableTouchID });
+  // const enableTouchID = await isFingerPrintAvailable();
+
+  return await SecurityStorage.deleteItem(key, { touchID: false });
 };
 
 export { setItem, getItem, deleteItem, isFingerPrintAvailable };

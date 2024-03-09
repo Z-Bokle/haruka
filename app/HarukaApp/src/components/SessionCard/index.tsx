@@ -35,20 +35,15 @@ const getRandomPicture = (key: string) => {
 
 const getTimeStr = (lastModified: number) => {
   const date = new Date(lastModified);
-  // 获取中国的时间字符串
 
   const year = date.getFullYear();
-  const month = date.getMonth() + 1;
-  const day = date.getDate();
-  const hour = date.getHours();
-  const minute = date.getMinutes();
-  const second = date.getSeconds();
+  const month = String(date.getMonth() + 1).padStart(2, '0');
+  const day = String(date.getDate()).padStart(2, '0');
+  const hours = String(date.getHours()).padStart(2, '0');
+  const minutes = String(date.getMinutes()).padStart(2, '0');
+  const seconds = String(date.getSeconds()).padStart(2, '0');
 
-  return `${year}年${month}月${day}日 ${hour
-    .toString()
-    .padStart(2, '0')}:${minute.toString().padStart(2, '0')}:${second
-    .toString()
-    .padStart(2, '0')}`;
+  return `${year}年${month}月${day}日 ${hours}:${minutes}:${seconds}`;
 };
 
 const SessionCard = (props: SessionProps) => {
@@ -60,43 +55,44 @@ const SessionCard = (props: SessionProps) => {
 
   return (
     <>
-      <Menu
-        visible={showMenu}
-        onDismiss={() => setShowMenu(false)}
-        anchor={
-          <TouchableRipple background="rgba(0,0,0,0.32)">
-            <Card style={style.card} onLongPress={() => setShowMenu(true)}>
-              <Card.Cover
-                source={
-                  baseVideoFrame
-                    ? { uri: baseVideoFrame }
-                    : getRandomPicture(sessionUUID)
-                }
-              />
+      <TouchableRipple background="rgba(0,0,0,0.32)">
+        <Card style={style.card} onLongPress={() => setShowMenu(true)}>
+          <Card.Cover
+            source={
+              baseVideoFrame
+                ? { uri: baseVideoFrame }
+                : getRandomPicture(sessionUUID)
+            }
+          />
+          <Menu
+            visible={showMenu}
+            onDismiss={() => setShowMenu(false)}
+            anchorPosition="top"
+            anchor={
               <Card.Title
                 title={sessionUUID}
                 subtitle={`上次修改：${getTimeStr(lastModified)}`}
               />
-              <Card.Content>
-                <Text variant="bodyMedium">{text}</Text>
-              </Card.Content>
-            </Card>
-          </TouchableRipple>
-        }>
-        <Menu.Item
-          onPress={() => {
-            setShowMenu(false);
-            show({
-              title: '删除会话',
-              content: `确定删除会话${sessionUUID}？`,
-              okCallback: () => {
-                onDelete?.(sessionUUID);
-              },
-            });
-          }}
-          title="删除"
-        />
-      </Menu>
+            }>
+            <Menu.Item
+              onPress={() => {
+                setShowMenu(false);
+                show({
+                  title: '删除会话',
+                  content: `确定删除会话${sessionUUID}？`,
+                  okCallback: () => {
+                    onDelete?.(sessionUUID);
+                  },
+                });
+              }}
+              title="删除"
+            />
+          </Menu>
+          <Card.Content>
+            <Text variant="bodyMedium">{text}</Text>
+          </Card.Content>
+        </Card>
+      </TouchableRipple>
     </>
   );
 };

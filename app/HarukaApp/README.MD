@@ -34,6 +34,7 @@ Haruka ReactNative 客户端
 - [x] 本地存储读写
 - [x] 网络请求与请求工具的封装
 - [x] UI特效，如TouchableRipple
+- [ ] 夜间模式适配（次要）
 
 ## 业务TODO
 每个业务包含UI和逻辑两部分

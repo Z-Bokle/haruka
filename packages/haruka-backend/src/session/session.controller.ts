@@ -76,7 +76,7 @@ export class SessionController {
     }
 
     const userId = parseInt(userIdStr as string);
-    const uuid = body.uuid;
+    const uuid = body.sessionUUID;
     const result = await this.sessionService.removeSession(userId, uuid);
     if (!result) {
       throw new SessionNotFoundException();
@@ -93,7 +93,7 @@ export class SessionController {
     if (!userIdStr) {
       throw new UserNotFoundException();
     }
-    const uuid = body.uuid;
+    const uuid = body.sessionUUID;
 
     const userId = parseInt(userIdStr as string);
 
