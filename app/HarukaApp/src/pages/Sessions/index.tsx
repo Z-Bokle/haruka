@@ -5,6 +5,7 @@ import {
   SafeAreaView,
   StatusBar,
   StyleSheet,
+  ToastAndroid,
   View,
 } from 'react-native';
 import SessionCard, { Session } from '../../components/SessionCard';
@@ -18,7 +19,7 @@ function Sessions() {
   const [refreshing, setRefreshing] = useState(false);
   const [extendFAB, setExtendFAB] = useState(false);
 
-  const { jsonGet } = useNetwork();
+  const { jsonGet, jsonPost } = useNetwork();
 
   useEffect(() => {
     jsonGet(session.list).then(res => setSessions(res));
@@ -32,6 +33,24 @@ function Sessions() {
     });
   }, [jsonGet]);
 
+  const handleCreateSession = useCallback(() => {
+    // TODO 创建会话，在完成Session表单页后实现
+  }, []);
+
+  const handleDeleteSession = useCallback(
+    (sessionUUID: string) => {
+      jsonPost(session.remove, { sessionUUID }).then(res => {
+        if (res) {
+          ToastAndroid.show('删除成功', ToastAndroid.LONG);
+          setSessions(
+            sessions.filter(item => item.sessionUUID !== sessionUUID),
+          );
+        }
+      });
+    },
+    [jsonPost, sessions],
+  );
+
   return (
     <View style={style.container}>
       <StatusBar backgroundColor="#F5FCFF" />
@@ -39,7 +58,9 @@ function Sessions() {
         <FlatList
           style={style.list}
           data={sessions}
-          renderItem={({ item }) => <SessionCard {...item} />}
+          renderItem={({ item }) => (
+            <SessionCard {...item} onDelete={handleDeleteSession} />
+          )}
           keyExtractor={item => item.sessionUUID}
           refreshControl={
             <RefreshControl refreshing={refreshing} onRefresh={handleRefresh} />
@@ -53,7 +74,7 @@ function Sessions() {
         <AnimatedFAB
           icon="plus"
           label="新建会话"
-          onPress={() => console.log('pressed')}
+          onPress={handleCreateSession}
           extended={extendFAB}
           visible={!refreshing}
           animateFrom="right"

@@ -28,7 +28,6 @@ export const useAuthorize = () => {
       }
     },
     login: async (userName: string, password: string) => {
-      // TODO resolve前，存储Token到状态管理和本地存储
       const res = await fetch(`${baseUrl}${user.login}`, {
         method: 'POST',
         headers: {

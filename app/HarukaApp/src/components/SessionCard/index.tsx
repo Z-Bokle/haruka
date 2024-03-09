@@ -3,7 +3,7 @@ import { StyleSheet } from 'react-native';
 import { Card, Menu, Text, TouchableRipple } from 'react-native-paper';
 import { useDialog } from '../../utils/AppStores';
 
-type SessionProps = {
+export interface Session {
   /** 上次更新时间 */
   lastModified: number;
   /** 会话UUID */
@@ -12,9 +12,11 @@ type SessionProps = {
   text?: string;
   /** BaseVideo的缩略图 */
   baseVideoFrame?: string;
-};
+}
 
-export type Session = SessionProps;
+export interface SessionProps extends Session {
+  onDelete?: (sessionUUID: string) => void;
+}
 
 const pictures = [
   require('../../assets/pics/card/card1.jpg'),
@@ -33,11 +35,24 @@ const getRandomPicture = (key: string) => {
 
 const getTimeStr = (lastModified: number) => {
   const date = new Date(lastModified);
-  return `${date.toLocaleDateString()} ${date.toLocaleTimeString()}`;
+  // 获取中国的时间字符串
+
+  const year = date.getFullYear();
+  const month = date.getMonth() + 1;
+  const day = date.getDate();
+  const hour = date.getHours();
+  const minute = date.getMinutes();
+  const second = date.getSeconds();
+
+  return `${year}年${month}月${day}日 ${hour
+    .toString()
+    .padStart(2, '0')}:${minute.toString().padStart(2, '0')}:${second
+    .toString()
+    .padStart(2, '0')}`;
 };
 
 const SessionCard = (props: SessionProps) => {
-  const { lastModified, sessionUUID, text, baseVideoFrame } = props;
+  const { lastModified, sessionUUID, text, baseVideoFrame, onDelete } = props;
 
   const [showMenu, setShowMenu] = useState(false);
 
@@ -75,8 +90,7 @@ const SessionCard = (props: SessionProps) => {
               title: '删除会话',
               content: `确定删除会话${sessionUUID}？`,
               okCallback: () => {
-                // TODO 删除会话
-                console.log('删除会话');
+                onDelete?.(sessionUUID);
               },
             });
           }}

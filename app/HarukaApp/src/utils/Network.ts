@@ -1,5 +1,6 @@
 import { useCallback } from 'react';
 import { useGlobalStore } from './AppStores';
+import { ToastAndroid } from 'react-native';
 
 /** 是否实现了toString方法 */
 type Serializable<T> = 'toString' extends keyof T ? T : never;
@@ -45,7 +46,11 @@ function buildForm(data: Record<string, any>) {
 
 /**
  * Hooks形式获取到的方法可以在运行时中拿到状态管理的baseUrl并自动拼接
+ *
  * 可以自动在请求头中插入Token，包含了Auth相关的所有逻辑
+ *
+ * 可以自动处理业务错误
+ *
  * 如果不需要这些逻辑，请直接使用fetch API
  */
 export const useNetwork = () => {
@@ -68,9 +73,12 @@ export const useNetwork = () => {
         if (json.errorCode === 0 || !json.errorCode) {
           return json.data;
         } else {
-          console.error();
+          throw new Error(json.errorMessage);
         }
-      } catch (e: any) {}
+      } catch (e: any) {
+        console.error(e.message);
+        ToastAndroid.show(e.message, ToastAndroid.SHORT);
+      }
     },
     [baseUrl, token],
   );
@@ -90,9 +98,12 @@ export const useNetwork = () => {
         if (json.errorCode === 0 || !json.errorCode) {
           return json.data;
         } else {
-          console.error();
+          throw new Error(json.errorMessage);
         }
-      } catch (e: any) {}
+      } catch (e: any) {
+        console.error(e.message);
+        ToastAndroid.show(e.message, ToastAndroid.SHORT);
+      }
     },
     [baseUrl, token],
   );
@@ -112,9 +123,12 @@ export const useNetwork = () => {
         if (json.errorCode === 0 || !json.errorCode) {
           return json.data;
         } else {
-          console.error();
+          throw new Error(json.errorMessage);
         }
-      } catch (e: any) {}
+      } catch (e: any) {
+        console.error(e.message);
+        ToastAndroid.show(e.message, ToastAndroid.SHORT);
+      }
     },
     [baseUrl, token],
   );

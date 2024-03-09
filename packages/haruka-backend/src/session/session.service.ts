@@ -80,7 +80,7 @@ export class SessionService {
       userId,
       isAvailable: 1,
       step: 0,
-      lastModified: new Date().getTime(),
+      lastModified: Date.now(),
     });
     return await this.sessionRepository.save(session);
   }
@@ -108,7 +108,7 @@ export class SessionService {
       },
       {
         ...configs,
-        lastModified: new Date().getTime(),
+        lastModified: Date.now(),
       },
     );
     return (result.affected ?? 0) > 0;
@@ -130,7 +130,7 @@ export class SessionService {
       { sessionUUID: uuid },
       {
         step: nextStep,
-        lastModified: new Date().getTime(),
+        lastModified: Date.now(),
       },
     );
     return {
