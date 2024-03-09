@@ -17,6 +17,8 @@ const NetworkSettingModal = (props: Props) => {
 
   const [url, setUrl] = useState(baseUrl);
 
+  console.log(url);
+
   return (
     <Portal>
       <View style={style.container}>
@@ -31,7 +33,8 @@ const NetworkSettingModal = (props: Props) => {
             label="服务端的Base URL"
             mode="outlined"
             style={style.input}
-            value={url}
+            defaultValue={url}
+            // value={url}
             onChangeText={setUrl}
           />
           <Button
