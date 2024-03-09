@@ -12,6 +12,9 @@ export interface GlobalStore {
 export interface ShowDialogConfigs {
   title?: string;
   content: string;
+
+  okCallback?: () => void;
+  cancelCallback?: () => void;
 }
 export interface DialogStore {
   visible: boolean;
@@ -19,6 +22,9 @@ export interface DialogStore {
   content?: string;
   show: (configs: ShowDialogConfigs) => void;
   hide: () => void;
+
+  cancelCallback?: () => void;
+  okCallback?: () => void;
 }
 
 const useGlobalStore = create<GlobalStore>(set => ({
@@ -33,8 +39,21 @@ const useGlobalStore = create<GlobalStore>(set => ({
 
 const useDialog = create<DialogStore>(set => ({
   visible: false,
-  show: (configs: ShowDialogConfigs) => set({ visible: true, ...configs }),
-  hide: () => set({ visible: false, title: undefined, content: undefined }),
+  show: (configs: ShowDialogConfigs) => {
+    // 先做好布局
+    set(configs);
+    set({ visible: true });
+  },
+  hide: () => {
+    // 先隐藏弹窗
+    set({ visible: false });
+    set({
+      title: undefined,
+      content: undefined,
+      okCallback: undefined,
+      cancelCallback: undefined,
+    });
+  },
 }));
 
 export { useGlobalStore, useDialog };

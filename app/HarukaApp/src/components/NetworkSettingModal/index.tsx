@@ -28,7 +28,7 @@ const NetworkSettingModal = (props: Props) => {
             <Text variant="titleLarge">设置</Text>
           </View>
           <TextInput
-            label="服务端的BaseUrl"
+            label="服务端的Base URL"
             mode="outlined"
             style={style.input}
             value={url}

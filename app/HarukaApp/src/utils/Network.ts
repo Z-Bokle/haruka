@@ -1,3 +1,4 @@
+import { useCallback } from 'react';
 import { useGlobalStore } from './AppStores';
 
 /** 是否实现了toString方法 */
@@ -53,40 +54,49 @@ export const useNetwork = () => {
     token: state.token,
   }));
 
-  const jsonGet = async (url: string) => {
-    const res = await fetch(`${baseUrl}${url}`, {
-      method: 'GET',
-      headers: buildHeaders({
-        Authorization: token,
-        'Content-Type': 'application/json',
-      }),
-    });
-    return await res.json();
-  };
+  const jsonGet = useCallback(
+    async (url: string) => {
+      const res = await fetch(`${baseUrl}${url}`, {
+        method: 'GET',
+        headers: buildHeaders({
+          Authorization: token,
+          'Content-Type': 'application/json',
+        }),
+      });
+      return await res.json();
+    },
+    [baseUrl, token],
+  );
 
-  const jsonPost = async (url: string, data: Record<string, any>) => {
-    const res = await fetch(`${baseUrl}${url}`, {
-      method: 'POST',
-      headers: buildHeaders({
-        Authorization: token,
-        'Content-Type': 'application/json',
-      }),
-      body: JSON.stringify(data),
-    });
-    return await res.json();
-  };
+  const jsonPost = useCallback(
+    async (url: string, data: Record<string, any>) => {
+      const res = await fetch(`${baseUrl}${url}`, {
+        method: 'POST',
+        headers: buildHeaders({
+          Authorization: token,
+          'Content-Type': 'application/json',
+        }),
+        body: JSON.stringify(data),
+      });
+      return await res.json();
+    },
+    [baseUrl, token],
+  );
 
-  const formPost = async (url: string, data: Record<string, any>) => {
-    const res = await fetch(`${baseUrl}${url}`, {
-      method: 'POST',
-      headers: buildHeaders({
-        Authorization: token,
-        'Content-Type': 'application/x-www-form-urlencoded',
-      }),
-      body: buildForm(data),
-    });
-    return await res.json();
-  };
+  const formPost = useCallback(
+    async (url: string, data: Record<string, any>) => {
+      const res = await fetch(`${baseUrl}${url}`, {
+        method: 'POST',
+        headers: buildHeaders({
+          Authorization: token,
+          'Content-Type': 'application/x-www-form-urlencoded',
+        }),
+        body: buildForm(data),
+      });
+      return await res.json();
+    },
+    [baseUrl, token],
+  );
 
   return {
     jsonGet,

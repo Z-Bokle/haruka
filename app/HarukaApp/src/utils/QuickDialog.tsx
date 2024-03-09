@@ -3,7 +3,8 @@ import { Button, Dialog, Portal, Text } from 'react-native-paper';
 import { useDialog } from './AppStores';
 
 export const QuickDialogElement = () => {
-  const { visible, hide, title, content } = useDialog();
+  const { visible, hide, title, content, okCallback, cancelCallback } =
+    useDialog();
 
   return (
     <Portal>
@@ -15,7 +16,20 @@ export const QuickDialogElement = () => {
           </Dialog.Content>
         )}
         <Dialog.Actions>
-          <Button onPress={() => hide()}>确定</Button>
+          <Button
+            onPress={() => {
+              cancelCallback?.();
+              hide();
+            }}>
+            取消
+          </Button>
+          <Button
+            onPress={() => {
+              okCallback?.();
+              hide();
+            }}>
+            确定
+          </Button>
         </Dialog.Actions>
       </Dialog>
     </Portal>
