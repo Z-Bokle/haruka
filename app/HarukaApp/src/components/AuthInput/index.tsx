@@ -9,6 +9,7 @@ import {
 import { Button, Icon, Text, TextInput } from 'react-native-paper';
 import { useAuthorize } from '../../hooks/useAuthorize';
 import { useDialog } from '../../utils/AppStores';
+import NetworkSettingModal from '../NetworkSettingModal';
 
 type Props = {
   type: 'register' | 'login';
@@ -30,6 +31,8 @@ const AuthInput = (props: Props) => {
 
   const [userName, setUserName] = useState<string>('');
   const [password, setPassword] = useState<string>('');
+
+  const [showNetworkSettingModal, setShowNetworkSettingModal] = useState(false);
 
   const userNameRef = useRef<NativeTextInput>(null);
 
@@ -69,8 +72,8 @@ const AuthInput = (props: Props) => {
       <BlurView
         style={style.blurContainer}
         blurType="dark"
-        blurAmount={10}
-        blurRadius={8}
+        blurAmount={25}
+        blurRadius={12}
       />
       <View style={style.conatiner}>
         <View style={style.actionBar}>
@@ -81,6 +84,14 @@ const AuthInput = (props: Props) => {
             onPress={() => onCancel?.()}
             style={style.backButton}>
             <Icon source="arrow-left" size={24} />
+          </Button>
+          <Button
+            compact
+            mode="elevated"
+            buttonColor="white"
+            onPress={() => setShowNetworkSettingModal(true)}
+            style={style.backButton}>
+            <Icon source="cog" size={24} />
           </Button>
         </View>
 
@@ -124,6 +135,10 @@ const AuthInput = (props: Props) => {
           提交
         </Button>
       </View>
+      <NetworkSettingModal
+        visible={showNetworkSettingModal}
+        onClose={() => setShowNetworkSettingModal(false)}
+      />
     </>
   );
 };
@@ -141,21 +156,22 @@ const style = StyleSheet.create({
     top: 80,
     zIndex: 100,
     backgroundColor: 'white',
-    opacity: 0.9,
+    // opacity: 0.9,
+    borderRadius: 12,
   },
   blurContainer: {
-    width: '80%',
-    height: 400,
+    width: '100%',
+    height: '100%',
     flex: 0,
     zIndex: 10,
     position: 'absolute',
-    top: 80,
+    // top: 80,
   },
   titleContainer: { marginVertical: 16 },
   actionBar: {
     width: '100%',
     flexDirection: 'row',
-    justifyContent: 'flex-start',
+    justifyContent: 'space-between',
     alignItems: 'center',
     paddingVertical: 10,
   },
