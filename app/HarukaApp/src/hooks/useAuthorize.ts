@@ -6,6 +6,7 @@ export const useAuthorize = () => {
 
   return {
     register: async (userName: string, password: string) => {
+      console.log(`${baseUrl}${user.register}`);
       const res = await fetch(`${baseUrl}${user.register}`, {
         method: 'POST',
         headers: {
@@ -17,6 +18,7 @@ export const useAuthorize = () => {
         }),
       });
       const result = await res.json();
+      console.log(result);
       if (result.errorCode === 0) {
         return result.data;
       } else {
@@ -25,6 +27,7 @@ export const useAuthorize = () => {
     },
     login: async (userName: string, password: string) => {
       console.log('login', userName, password);
+      // TODO resolve前，存储Token到状态管理和本地存储
     },
   };
 };

@@ -6,6 +6,8 @@ import * as cookieParser from 'cookie-parser';
 import { join } from 'path';
 import { FileManager } from './utils/file';
 
+const PORT = 3000;
+
 function logIpInfo() {
   const ipInfo = Object.fromEntries(
     Object.entries(os.networkInterfaces()).map((kv) => [
@@ -48,7 +50,8 @@ async function bootstrap() {
 
   logIpInfo();
   prepareStaticFileDictionary();
+  console.log('服务器端口号：', PORT);
 
-  await app.listen(3000);
+  await app.listen(PORT);
 }
 bootstrap();

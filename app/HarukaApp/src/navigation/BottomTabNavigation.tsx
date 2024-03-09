@@ -17,14 +17,14 @@ export type BottomTabParamList = {
 
 const routes = [
   {
-    name: 'Home',
+    name: 'HomeStack',
     component: HomeStackNavigation,
     key: 'home',
     icon: 'home',
     label: '首页',
   },
   {
-    name: 'Sessions',
+    name: 'SessionsStack',
     component: SessionsStackNavigation,
     key: 'sessions',
     icon: 'robot',

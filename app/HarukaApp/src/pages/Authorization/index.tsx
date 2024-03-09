@@ -1,14 +1,35 @@
-import React, { useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { Dimensions, StyleSheet, View } from 'react-native';
 import { Button } from 'react-native-paper';
 import Video from 'react-native-video';
 import AuthInput from '../../components/AuthInput';
+import { getItem } from '../../utils/SecurityStoarge';
+import { useGlobalStore } from '../../utils/AppStores';
 
-const Authorization = () => {
+const Authorization = ({ navigation }) => {
   const videoRef = useRef<Video>(null);
   const bgVideo = require('../../assets/videos/auth_bg.mp4');
 
   const [status, setStatus] = useState<'none' | 'register' | 'login'>('none');
+
+  const { setToken } = useGlobalStore(state => ({ setToken: state.setToken }));
+
+  useEffect(() => {
+    // 从本地存储读出token，如果存在就直接跳转到主页 navigation.replace('App')
+    // 如果存在，也顺便存进状态管理
+
+    (async () => {
+      try {
+        const token = await getItem('token');
+        if (token) {
+          setToken(token);
+          navigation.replace('App');
+        }
+      } catch (e: any) {
+        console.error(e.message);
+      }
+    })();
+  }, [navigation, setToken]);
 
   return (
     <View style={styles.constainer}>
@@ -37,7 +58,14 @@ const Authorization = () => {
           onSuccess={() => setStatus('none')}
         />
       ) : (
-        <AuthInput type="login" onCancel={() => setStatus('none')} />
+        <AuthInput
+          type="login"
+          onCancel={() => setStatus('none')}
+          onSuccess={() => {
+            setStatus('none');
+            navigation.replace('App');
+          }}
+        />
       )}
       <Video
         source={bgVideo}

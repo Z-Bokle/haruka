@@ -101,6 +101,7 @@ const AuthInput = (props: Props) => {
 
         <TextInput
           style={style.input}
+          textContentType="username"
           mode="outlined"
           label="用户名"
           placeholder="请输入用户名"
@@ -114,6 +115,8 @@ const AuthInput = (props: Props) => {
 
         <TextInput
           style={style.input}
+          textContentType="password"
+          secureTextEntry
           mode="outlined"
           label="密码"
           placeholder="请输入密码"
