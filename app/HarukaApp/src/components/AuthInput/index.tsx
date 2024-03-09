@@ -42,10 +42,11 @@ const AuthInput = (props: Props) => {
   const doRegister = useCallback(() => {
     register(userName, password)
       .then(() => {
-        ToastAndroid.show('注册成功', ToastAndroid.SHORT);
+        ToastAndroid.show('注册成功，请登录', ToastAndroid.SHORT);
         onSuccess?.();
       })
       .catch(err => {
+        console.error(err);
         show({ content: err.message });
       });
   }, [onSuccess, password, register, show, userName]);

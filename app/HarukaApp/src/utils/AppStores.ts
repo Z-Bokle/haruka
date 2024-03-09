@@ -26,7 +26,8 @@ const useGlobalStore = create<GlobalStore>(set => ({
   setToken: (token: string | null) => set({ token }),
   clearToken: () => set({ token: null }),
 
-  baseUrl: '127.0.0.1',
+  baseUrl: 'http://10.136.12.203:3000',
+  // baseUrl: 'http://192.168.167.15:3000',
   setBaseUrl: (baseUrl: string) => set({ baseUrl }),
 }));
 

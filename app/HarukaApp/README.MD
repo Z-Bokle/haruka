@@ -11,6 +11,8 @@ Haruka ReactNative 客户端
 7. 视频录制 react-native-vision-camera
 8. 视频播放 react-native-video
 9. 毛玻璃 react-native-blur
+10. UI调试 react-devtools
+11. 逻辑与网络调试 Reactotron
 
 ## 项目结构(仅RN部分)
 - components 组件  

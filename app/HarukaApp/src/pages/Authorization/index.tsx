@@ -1,10 +1,12 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { Dimensions, StyleSheet, View } from 'react-native';
+import { Dimensions, StyleSheet, ToastAndroid, View } from 'react-native';
 import { Button } from 'react-native-paper';
 import Video from 'react-native-video';
 import AuthInput from '../../components/AuthInput';
-import { getItem } from '../../utils/SecurityStoarge';
+import { deleteItem, getItem } from '../../utils/SecurityStoarge';
 import { useGlobalStore } from '../../utils/AppStores';
+import { useNetwork } from '../../utils/Network';
+import { user } from '../../api';
 
 const Authorization = ({ navigation }) => {
   const videoRef = useRef<Video>(null);
@@ -14,6 +16,8 @@ const Authorization = ({ navigation }) => {
 
   const { setToken } = useGlobalStore(state => ({ setToken: state.setToken }));
 
+  const { baseUrl } = useNetwork();
+
   useEffect(() => {
     // 从本地存储读出token，如果存在就直接跳转到主页 navigation.replace('App')
     // 如果存在，也顺便存进状态管理
@@ -22,14 +26,28 @@ const Authorization = ({ navigation }) => {
       try {
         const token = await getItem('token');
         if (token) {
-          setToken(token);
-          navigation.replace('App');
+          const res = await fetch(`${baseUrl}${user.info}`, {
+            method: 'GET',
+            headers: {
+              'Content-Type': 'application/json',
+              Authorization: `${token}`,
+            },
+          }).then(resp => resp.json());
+          if (res.errorCode === 0) {
+            setToken(token);
+            navigation.replace('App');
+            ToastAndroid.show('自动登录成功', ToastAndroid.SHORT);
+          } else {
+            deleteItem('token');
+          }
+        } else {
+          console.log('No token in local storage.');
         }
       } catch (e: any) {
         console.error(e.message);
       }
     })();
-  }, [navigation, setToken]);
+  }, [baseUrl, navigation, setToken]);
 
   return (
     <View style={styles.constainer}>
@@ -55,7 +73,7 @@ const Authorization = ({ navigation }) => {
         <AuthInput
           type="register"
           onCancel={() => setStatus('none')}
-          onSuccess={() => setStatus('none')}
+          onSuccess={() => setStatus('login')}
         />
       ) : (
         <AuthInput
