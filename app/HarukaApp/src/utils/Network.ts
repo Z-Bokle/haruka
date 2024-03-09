@@ -56,44 +56,65 @@ export const useNetwork = () => {
 
   const jsonGet = useCallback(
     async (url: string) => {
-      const res = await fetch(`${baseUrl}${url}`, {
-        method: 'GET',
-        headers: buildHeaders({
-          Authorization: token,
-          'Content-Type': 'application/json',
-        }),
-      });
-      return await res.json();
+      try {
+        const res = await fetch(`${baseUrl}${url}`, {
+          method: 'GET',
+          headers: buildHeaders({
+            Authorization: token,
+            'Content-Type': 'application/json',
+          }),
+        });
+        const json = await res.json();
+        if (json.errorCode === 0 || !json.errorCode) {
+          return json.data;
+        } else {
+          console.error();
+        }
+      } catch (e: any) {}
     },
     [baseUrl, token],
   );
 
   const jsonPost = useCallback(
     async (url: string, data: Record<string, any>) => {
-      const res = await fetch(`${baseUrl}${url}`, {
-        method: 'POST',
-        headers: buildHeaders({
-          Authorization: token,
-          'Content-Type': 'application/json',
-        }),
-        body: JSON.stringify(data),
-      });
-      return await res.json();
+      try {
+        const res = await fetch(`${baseUrl}${url}`, {
+          method: 'POST',
+          headers: buildHeaders({
+            Authorization: token,
+            'Content-Type': 'application/json',
+          }),
+          body: JSON.stringify(data),
+        });
+        const json = await res.json();
+        if (json.errorCode === 0 || !json.errorCode) {
+          return json.data;
+        } else {
+          console.error();
+        }
+      } catch (e: any) {}
     },
     [baseUrl, token],
   );
 
   const formPost = useCallback(
     async (url: string, data: Record<string, any>) => {
-      const res = await fetch(`${baseUrl}${url}`, {
-        method: 'POST',
-        headers: buildHeaders({
-          Authorization: token,
-          'Content-Type': 'application/x-www-form-urlencoded',
-        }),
-        body: buildForm(data),
-      });
-      return await res.json();
+      try {
+        const res = await fetch(`${baseUrl}${url}`, {
+          method: 'POST',
+          headers: buildHeaders({
+            Authorization: token,
+            'Content-Type': 'application/x-www-form-urlencoded',
+          }),
+          body: buildForm(data),
+        });
+        const json = await res.json();
+        if (json.errorCode === 0 || !json.errorCode) {
+          return json.data;
+        } else {
+          console.error();
+        }
+      } catch (e: any) {}
     },
     [baseUrl, token],
   );

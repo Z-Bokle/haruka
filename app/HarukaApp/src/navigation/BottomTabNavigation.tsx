@@ -6,7 +6,7 @@ import {
 } from '@react-navigation/bottom-tabs';
 import { BottomNavigation, Icon } from 'react-native-paper';
 import { CommonActions } from '@react-navigation/native';
-import { HomeStackNavigation } from './HomeStackNavigation';
+// import { HomeStackNavigation } from './HomeStackNavigation';
 import { SessionsStackNavigation } from './SessionsStackNavigation';
 
 export type BottomTabParamList = {
@@ -16,13 +16,13 @@ export type BottomTabParamList = {
 };
 
 const routes = [
-  {
-    name: 'HomeStack',
-    component: HomeStackNavigation,
-    key: 'home',
-    icon: 'home',
-    label: '首页',
-  },
+  // {
+  //   name: 'HomeStack',
+  //   component: HomeStackNavigation,
+  //   key: 'home',
+  //   icon: 'home',
+  //   label: '首页',
+  // },
   {
     name: 'SessionsStack',
     component: SessionsStackNavigation,

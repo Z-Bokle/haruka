@@ -10,3 +10,7 @@ Haruka的后端实现
 3. 生成文本 step设为1
 4. 生成音频 step设为2
 5. 生成视频 step设为3
+
+## TODO
+- [ ] 任务进度查询
+- [ ] baseVideo的缩略图在查询session时给出

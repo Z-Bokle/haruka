@@ -21,13 +21,8 @@ function Settings({ navigation }) {
   const { jsonGet } = useNetwork();
 
   useEffect(() => {
-    console.log('useEffect');
     jsonGet(user.info).then(result => {
-      if (result.errorCode === 0 || !result.errorCode) {
-        setUserName(result.data.userName);
-      } else {
-        throw new Error(result.errorMessage);
-      }
+      setUserName(result.userName);
     });
   }, [jsonGet]);
 
@@ -41,10 +36,14 @@ function Settings({ navigation }) {
           </Text>
         </View>
         <View style={style.menuContainer}>
-          <Button onPress={() => setShowNetworkSettingModal(true)}>
+          <Button
+            labelStyle={style.button}
+            onPress={() => setShowNetworkSettingModal(true)}>
             修改Base URL
           </Button>
           <Button
+            textColor="red"
+            labelStyle={style.button}
             onPress={() => {
               show({
                 title: '请确认',
@@ -74,17 +73,21 @@ const style = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'space-between',
     backgroundColor: '#F5FCFF',
-    paddingVertical: 72,
+    paddingTop: 72,
+    paddingBottom: 32,
   },
   avatarConatiner: {
     alignItems: 'center',
     justifyContent: 'center',
   },
-  menuContainer: {},
+  menuContainer: { rowGap: 24 },
   greeting: {
     fontWeight: 'bold',
     textAlign: 'center',
     marginVertical: 18,
+  },
+  button: {
+    fontSize: 14,
   },
 });
 
