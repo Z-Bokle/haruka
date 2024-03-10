@@ -41,7 +41,15 @@ const SessionView = () => {
 
   const scrollViewRef = useRef<ScrollView>(null);
 
-  // console.log(session);
+  const anchorRefs = [
+    useRef<View>(null),
+    useRef<View>(null),
+    useRef<View>(null),
+  ];
+  const [anchorTops, setAnchorTops] = useState([0, 0, 0]);
+
+  /** 实际标题的相对位置 */
+  const actualAnchorTops = anchorTops.map((top, _, arr) => top - arr[0]);
 
   useEffect(() => {
     (async () => {
@@ -58,6 +66,10 @@ const SessionView = () => {
     })();
   }, [jsonGet, navigation, sessionUUID]);
 
+  useEffect(() => {
+    setIsSaved(false);
+  }, [session]);
+
   return (
     <View style={style.constainer}>
       <View style={style.segementView}>
@@ -70,19 +82,64 @@ const SessionView = () => {
               value: 'text-button',
               label: '文本',
               icon: 'text',
+              onPress: () =>
+                scrollViewRef.current?.scrollTo({
+                  y: actualAnchorTops[0],
+                  animated: true,
+                }),
             },
             {
               value: 'audio-button',
               label: '音频',
               icon: 'music',
+              disabled: (session?.step ?? 0) <= 0,
+              onPress: () =>
+                scrollViewRef.current?.scrollTo({
+                  y: actualAnchorTops[1],
+                  animated: true,
+                }),
             },
-            { value: 'video-button', label: '视频', icon: 'video' },
+            {
+              value: 'video-button',
+              label: '视频',
+              icon: 'video',
+              disabled: (session?.step ?? 0) <= 1,
+              onPress: () =>
+                scrollViewRef.current?.scrollTo({
+                  y: actualAnchorTops[2],
+                  animated: true,
+                }),
+            },
           ]}
         />
       </View>
       {session && (
-        <ScrollView style={style.scrollView} ref={scrollViewRef}>
-          <View style={style.titleView}>
+        <ScrollView
+          style={style.scrollView}
+          ref={scrollViewRef}
+          onScroll={e => {
+            const offsetY = e.nativeEvent.contentOffset.y;
+            if (offsetY <= actualAnchorTops[1]) {
+              setButtonValue('text-button');
+            } else if (offsetY <= actualAnchorTops[2]) {
+              setButtonValue('audio-button');
+            } else {
+              setButtonValue('video-button');
+            }
+          }}>
+          <View
+            style={style.titleView}
+            ref={anchorRefs[0]}
+            onLayout={() => {
+              anchorRefs[0].current?.measure((...params) => {
+                const index = 0;
+                setAnchorTops(prevAnchorTops => [
+                  ...prevAnchorTops.slice(0, index),
+                  params[5],
+                  ...prevAnchorTops.slice(index + 1),
+                ]);
+              });
+            }}>
             <Text variant="displaySmall">文本</Text>
           </View>
           <FormItem label="模型">
@@ -150,10 +207,40 @@ const SessionView = () => {
               }
             />
           </FormItem>
-          <View style={style.contentView}>
-            <Text>{session?.sessionUUID}</Text>
-          </View>
+
           <Divider bold />
+          <View
+            style={style.titleView}
+            ref={anchorRefs[1]}
+            onLayout={() => {
+              anchorRefs[1].current?.measure((...params) => {
+                const index = 1;
+                setAnchorTops(prevAnchorTops => [
+                  ...prevAnchorTops.slice(0, index),
+                  params[5],
+                  ...prevAnchorTops.slice(index + 1),
+                ]);
+              });
+            }}>
+            <Text variant="displaySmall">音频</Text>
+          </View>
+          {/* <View style={{ height: 1000 }} /> */}
+          <View
+            style={style.titleView}
+            ref={anchorRefs[2]}
+            onLayout={() => {
+              anchorRefs[2].current?.measure((...params) => {
+                const index = 2;
+                setAnchorTops(prevAnchorTops => [
+                  ...prevAnchorTops.slice(0, index),
+                  params[5],
+                  ...prevAnchorTops.slice(index + 1),
+                ]);
+              });
+            }}>
+            <Text variant="displaySmall">视频</Text>
+          </View>
+          {/* <View style={{ height: 1000 }} /> */}
         </ScrollView>
       )}
     </View>
@@ -184,7 +271,6 @@ const style = StyleSheet.create({
   titleView: {
     paddingVertical: 8,
   },
-  contentView: {},
 });
 
 export default SessionView;
