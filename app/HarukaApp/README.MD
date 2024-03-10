@@ -13,6 +13,7 @@ Haruka ReactNative 客户端
 9. 毛玻璃 react-native-blur
 10. UI调试 react-devtools
 11. 逻辑与网络调试 Reactotron
+12. 弹窗选择器 react-native-modal-selector
 
 ## 项目结构(仅RN部分)
 - components 组件  

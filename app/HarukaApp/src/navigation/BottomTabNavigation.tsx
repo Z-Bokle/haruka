@@ -7,7 +7,7 @@ import {
 import { BottomNavigation, Icon } from 'react-native-paper';
 import { CommonActions } from '@react-navigation/native';
 // import { HomeStackNavigation } from './HomeStackNavigation';
-import { SessionsStackNavigation } from './SessionsStackNavigation';
+// import { SessionsStackNavigation } from './SessionsStackNavigation';
 import Sessions from '../pages/Sessions';
 
 export type BottomTabParamList = {
