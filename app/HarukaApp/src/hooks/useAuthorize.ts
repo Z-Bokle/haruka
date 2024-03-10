@@ -20,7 +20,7 @@ export const useAuthorize = () => {
         }),
       });
       const result = await res.json();
-      console.log(result);
+      // console.log(result);
       if (result.errorCode === 0 || !result.errorCode) {
         return result.data;
       } else {

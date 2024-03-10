@@ -17,7 +17,7 @@ const NetworkSettingModal = (props: Props) => {
 
   const [url, setUrl] = useState(baseUrl);
 
-  console.log(url);
+  // console.log(url);
 
   return (
     <Portal>

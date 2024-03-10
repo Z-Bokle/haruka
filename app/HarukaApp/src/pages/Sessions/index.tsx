@@ -11,13 +11,14 @@ import {
 import SessionCard, { Session } from '../../components/SessionCard';
 import { useNetwork } from '../../utils/Network';
 import { session } from '../../api';
-import { AnimatedFAB } from 'react-native-paper';
+import { ActivityIndicator, AnimatedFAB } from 'react-native-paper';
 
 function Sessions() {
   const [sessions, setSessions] = useState<Session[]>([]);
 
   const [refreshing, setRefreshing] = useState(false);
   const [extendFAB, setExtendFAB] = useState(false);
+  const [isFABLoading, setIsFABLoading] = useState(false);
 
   const { jsonGet, jsonPost } = useNetwork();
 
@@ -35,6 +36,8 @@ function Sessions() {
 
   const handleCreateSession = useCallback(() => {
     // TODO 创建会话，在完成Session表单页后实现
+    setIsFABLoading(true);
+    setTimeout(() => setIsFABLoading(false), 2000);
   }, []);
 
   const handleDeleteSession = useCallback(
@@ -80,6 +83,16 @@ function Sessions() {
           animateFrom="right"
           style={style.fab}
         />
+        {isFABLoading && (
+          <ActivityIndicator
+            animating={true}
+            style={[
+              style.fab,
+              style.fabLoading,
+              extendFAB ? style.fabLoadingExtended : style.fabLoadingUnextended,
+            ]}
+          />
+        )}
       </SafeAreaView>
     </View>
   );
@@ -102,6 +115,18 @@ const style = StyleSheet.create({
     margin: 16,
     right: 0,
     bottom: 0,
+  },
+  fabLoading: {
+    borderRadius: 16,
+    height: 56,
+    backgroundColor: 'white',
+    opacity: 0.5,
+  },
+  fabLoadingUnextended: {
+    width: 56,
+  },
+  fabLoadingExtended: {
+    width: 130,
   },
 });
 

@@ -12,6 +12,20 @@ export interface Session {
   text?: string;
   /** BaseVideo的缩略图 */
   baseVideoFrame?: string;
+  /** 用户ID */
+  userId?: number;
+  /** 会话步骤 */
+  step: 0 | 1 | 2 | 3;
+  /** 模型ID */
+  modelId?: number;
+  /** 提示词 */
+  prompt?: string;
+  /** api key */
+  apiKey?: string;
+  /** 音频UUID */
+  audioUUID?: string;
+  /** 视频UUID */
+  videoUUID?: string;
 }
 
 export interface SessionProps extends Session {
