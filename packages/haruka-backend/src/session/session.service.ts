@@ -56,6 +56,9 @@ export class SessionService {
   }
 
   async findOne(sessionUUID: string, userId: number) {
+    if (!sessionUUID) {
+      throw new SessionNotFoundException();
+    }
     const session = await this.sessionRepository.findOne({
       where: {
         userId,
