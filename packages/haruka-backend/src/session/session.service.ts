@@ -71,7 +71,7 @@ export class SessionService {
     const sessions = await this.sessionRepository.find({
       where: configs,
     });
-    return sessions;
+    return sessions.sort((s1, s2) => s2.lastModified - s1.lastModified);
   }
 
   async createSession(userId: number) {
