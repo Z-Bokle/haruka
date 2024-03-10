@@ -15,6 +15,9 @@ import FormItem from '../../components/FormItem';
 import { useModels } from '../../hooks/useModels';
 import ModalSelector from 'react-native-modal-selector';
 import Selector from '../../components/Selector';
+import { usePreprompts } from '../../hooks/usePrePrompts';
+
+const PROMPT_MAX_LENGTH = 100;
 
 const SessionView = () => {
   const { jsonPost, jsonGet } = useNetwork();
@@ -25,15 +28,20 @@ const SessionView = () => {
   const { sessionUUID } = route.params as any;
 
   const [session, setSession] = useState<Session>();
+  const [prePromptId, setPrePromptId] = useState<number>();
   const [isSaved, setIsSaved] = useState(true);
 
   const [buttonValue, setButtonValue] = useState('');
 
   const { models } = useModels();
+  const { prePrompts } = usePreprompts();
 
   const modelSelectorRef = useRef<ModalSelector>(null);
+  const prePromptSelectorRef = useRef<ModalSelector>(null);
 
-  console.log(session);
+  const scrollViewRef = useRef<ScrollView>(null);
+
+  // console.log(session);
 
   useEffect(() => {
     (async () => {
@@ -73,7 +81,7 @@ const SessionView = () => {
         />
       </View>
       {session && (
-        <ScrollView style={style.scrollView}>
+        <ScrollView style={style.scrollView} ref={scrollViewRef}>
           <View style={style.titleView}>
             <Text variant="displaySmall">文本</Text>
           </View>
@@ -99,9 +107,48 @@ const SessionView = () => {
               </Button>
             </Selector>
           </FormItem>
-          <FormItem label="提示词预设"></FormItem>
-          <FormItem label="提示词" mode="vertical">
-            <TextInput multiline>{session?.prompt}</TextInput>
+          <FormItem label="提示词预设">
+            <Selector
+              options={prePrompts.map(prePrompt => ({
+                key: prePrompt.id,
+                label: prePrompt.name,
+              }))}
+              onChange={({ key }) => {
+                setPrePromptId(key);
+                const prompt = prePrompts.find(
+                  prePrompt => prePrompt.id === key,
+                )?.description;
+                setSession(prevSession => ({
+                  ...(prevSession as Session),
+                  prompt,
+                }));
+              }}>
+              <Button
+                onPress={() => prePromptSelectorRef.current?.open()}
+                mode="contained-tonal">
+                <Text variant="bodyMedium">
+                  {prePrompts.find(prePrompt => prePrompt.id === prePromptId)
+                    ?.name ?? '请选择提示词预设'}
+                </Text>
+              </Button>
+            </Selector>
+          </FormItem>
+          <FormItem
+            label={`提示词 (${
+              session.prompt?.length ?? 0
+            }/${PROMPT_MAX_LENGTH})`}
+            mode="vertical">
+            <TextInput
+              multiline
+              maxLength={PROMPT_MAX_LENGTH}
+              value={session.prompt}
+              onChangeText={text =>
+                setSession(prevSession => ({
+                  ...(prevSession as Session),
+                  prompt: text,
+                }))
+              }
+            />
           </FormItem>
           <View style={style.contentView}>
             <Text>{session?.sessionUUID}</Text>

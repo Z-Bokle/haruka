@@ -6,7 +6,7 @@ export const user = {
 
 export const text = {
   listModel: '/text/model/list',
-  listPrePrompts: '/text/preprmpt/list',
+  listPrePrompts: '/text/preprompt/list',
   generate: '/text/generate',
   updateItems: '/text/items/update',
 };
