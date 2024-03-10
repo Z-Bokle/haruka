@@ -12,14 +12,6 @@ export function SessionsStackNavigation() {
         headerShown: false,
       }}>
       <Stack.Screen name="Sessions" component={Sessions} />
-      <Stack.Screen
-        name="SessionView"
-        component={SessionView}
-        options={({ route }) => ({
-          headerShown: true,
-          title: (route.params as any)?.sessionUUID ?? '会话',
-        })}
-      />
     </Stack.Navigator>
   );
 }
