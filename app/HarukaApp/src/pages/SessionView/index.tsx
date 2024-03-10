@@ -1,7 +1,7 @@
-import React, { useEffect, useRef, useState } from 'react';
-import { ScrollView, StyleSheet, View } from 'react-native';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
+import { ScrollView, StyleSheet, ToastAndroid, View } from 'react-native';
 import { joinQueries, useNetwork } from '../../utils/Network';
-import { session as sessionApi } from '../../api';
+import { session as sessionApi, text as textApi } from '../../api';
 import { Session } from '../../components/SessionCard';
 import {
   Button,
@@ -30,6 +30,7 @@ const SessionView = () => {
   const [session, setSession] = useState<Session>();
   const [prePromptId, setPrePromptId] = useState<number>();
   const [isSaved, setIsSaved] = useState(true);
+  const [isGeneratingText, setisGeneratingText] = useState(false);
 
   const [buttonValue, setButtonValue] = useState('');
 
@@ -69,6 +70,33 @@ const SessionView = () => {
   useEffect(() => {
     setIsSaved(false);
   }, [session]);
+
+  const handleGenerateText = useCallback(async () => {
+    if (isGeneratingText) {
+      return;
+    }
+    setisGeneratingText(true);
+    const result = await jsonPost(textApi.updateItems, {
+      sessionUUID: session?.sessionUUID,
+      modelId: session?.modelId,
+      prompt: session?.prompt,
+      apiKey: session?.apiKey,
+    });
+    if (!result) {
+      return;
+    }
+    const text = await jsonPost(textApi.generate, {
+      sessionUUID: session?.sessionUUID,
+    });
+    if (text) {
+      ToastAndroid.show('文本生成成功', ToastAndroid.SHORT);
+      setSession(prevSession => ({
+        ...(prevSession as Session),
+        text,
+      }));
+    }
+    setisGeneratingText(false);
+  }, [isGeneratingText, jsonPost, session]);
 
   return (
     <View style={style.constainer}>
@@ -208,6 +236,33 @@ const SessionView = () => {
             />
           </FormItem>
 
+          <FormItem label="API KEY" mode="vertical">
+            <TextInput
+              value={session.apiKey}
+              onChangeText={apiKey =>
+                setSession(prevSession => ({
+                  ...(prevSession as Session),
+                  apiKey,
+                }))
+              }
+            />
+          </FormItem>
+
+          <View style={style.inlineSingleButtonView}>
+            <Button
+              mode="elevated"
+              onPress={handleGenerateText}
+              loading={isGeneratingText}>
+              提交并生成文本
+            </Button>
+          </View>
+
+          <FormItem label="新闻文本" mode="vertical">
+            <TextInput value={session.text} readOnly />
+          </FormItem>
+
+          <FormItem></FormItem>
+
           <Divider bold />
           <View
             style={style.titleView}
@@ -259,17 +314,20 @@ const style = StyleSheet.create({
     alignItems: 'center',
     paddingHorizontal: 20,
     paddingVertical: 10,
-    backgroundColor: 'aqua',
   },
   segementButtons: {},
   scrollView: {
     flex: 1,
-    // backgroundColor: 'lightgreen',
     paddingHorizontal: 20,
     flexGrow: 1,
   },
   titleView: {
     paddingVertical: 8,
+  },
+  inlineSingleButtonView: {
+    flexDirection: 'row',
+    justifyContent: 'flex-end',
+    padding: 10,
   },
 });
 

@@ -4,7 +4,7 @@ import { Text } from 'react-native-paper';
 
 type Props = {
   children?: ReactNode;
-  label: string;
+  label?: string;
   mode?: 'inline' | 'vertical';
 };
 
@@ -15,11 +15,13 @@ const FormItem = (props: Props) => {
 
   return (
     <View style={isInline ? style.container : verticalStyle.container}>
-      <View style={isInline ? style.labelView : verticalStyle.labelView}>
-        <Text style={isInline ? style.label : verticalStyle.label}>
-          {label}
-        </Text>
-      </View>
+      {label && (
+        <View style={isInline ? style.labelView : verticalStyle.labelView}>
+          <Text style={isInline ? style.label : verticalStyle.label}>
+            {label}
+          </Text>
+        </View>
+      )}
       <View style={isInline ? style.contentView : verticalStyle.contentView}>
         {children}
       </View>
