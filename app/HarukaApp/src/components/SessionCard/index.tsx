@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { StyleSheet } from 'react-native';
 import { Card, Menu, Text, TouchableRipple } from 'react-native-paper';
 import { useDialog } from '../../utils/AppStores';
+import { useNavigation } from '@react-navigation/native';
 
 export interface Session {
   /** 上次更新时间 */
@@ -65,12 +66,17 @@ const SessionCard = (props: SessionProps) => {
 
   const [showMenu, setShowMenu] = useState(false);
 
+  const navigation: any = useNavigation();
+
   const { show } = useDialog();
 
   return (
     <>
       <TouchableRipple background="rgba(0,0,0,0.32)">
-        <Card style={style.card} onLongPress={() => setShowMenu(true)}>
+        <Card
+          style={style.card}
+          onLongPress={() => setShowMenu(true)}
+          onPress={() => navigation.push('SessionView', { sessionUUID })}>
           <Card.Cover
             source={
               baseVideoFrame
