@@ -7,11 +7,14 @@ import { useNetwork } from '../../utils/Network';
 import { user } from '../../api';
 import NetworkSettingModal from '../../components/NetworkSettingModal';
 import { deleteItem } from '../../utils/SecurityStoarge';
+import { useNavigation } from '@react-navigation/native';
 
-function Settings({ navigation }) {
+function Settings() {
   const { setToken } = useGlobalStore(state => ({
     setToken: state.setToken,
   }));
+
+  const navigation: any = useNavigation();
 
   const { show } = useDialog();
 

@@ -13,7 +13,7 @@ import { useNetwork } from '../../utils/Network';
 import { session } from '../../api';
 import { ActivityIndicator, AnimatedFAB } from 'react-native-paper';
 
-function Sessions() {
+function Sessions({ navigation }) {
   const [sessions, setSessions] = useState<Session[]>([]);
 
   const [refreshing, setRefreshing] = useState(false);
@@ -37,8 +37,13 @@ function Sessions() {
   const handleCreateSession = useCallback(() => {
     // TODO 创建会话，在完成Session表单页后实现
     setIsFABLoading(true);
-    setTimeout(() => setIsFABLoading(false), 2000);
-  }, []);
+    jsonPost(session.create).then(data => {
+      ToastAndroid.show('创建成功', ToastAndroid.LONG);
+      setSessions(prevSessions => [data, ...prevSessions]);
+      setIsFABLoading(false);
+      navigation.push('SessionView', { sessionUUID: data.sessionUUID });
+    });
+  }, [jsonPost, navigation]);
 
   const handleDeleteSession = useCallback(
     (sessionUUID: string) => {

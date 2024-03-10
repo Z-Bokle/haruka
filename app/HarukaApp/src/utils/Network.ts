@@ -84,7 +84,7 @@ export const useNetwork = () => {
   );
 
   const jsonPost = useCallback(
-    async (url: string, data: Record<string, any>) => {
+    async (url: string, data: Record<string, any> = {}) => {
       try {
         const res = await fetch(`${baseUrl}${url}`, {
           method: 'POST',
@@ -109,7 +109,7 @@ export const useNetwork = () => {
   );
 
   const formPost = useCallback(
-    async (url: string, data: Record<string, any>) => {
+    async (url: string, data: Record<string, any> = {}) => {
       try {
         const res = await fetch(`${baseUrl}${url}`, {
           method: 'POST',

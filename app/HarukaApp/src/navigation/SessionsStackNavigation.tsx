@@ -1,6 +1,7 @@
 import { createStackNavigator } from '@react-navigation/stack';
 import React from 'react';
 import Sessions from '../pages/Sessions';
+import SessionView from '../pages/SessionView';
 
 const Stack = createStackNavigator();
 
@@ -11,6 +12,14 @@ export function SessionsStackNavigation() {
         headerShown: false,
       }}>
       <Stack.Screen name="Sessions" component={Sessions} />
+      <Stack.Screen
+        name="SessionView"
+        component={SessionView}
+        options={({ route }) => ({
+          headerShown: true,
+          title: (route.params as any)?.sessionUUID ?? '会话',
+        })}
+      />
     </Stack.Navigator>
   );
 }
