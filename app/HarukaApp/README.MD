@@ -18,11 +18,14 @@ Haruka ReactNative 客户端
 - components 组件  
 - pages 页面  
     - Authorization 登录注册  
-    - Home 首页  
+    - Home 首页(暂不使用)  
     - Session 会话/分步表单  
     - Sessions 会话列表  
     - Settings 设置  
 - utils 工具  
+- hooks 抽象复杂业务逻辑的Hooks
+- api 映射后端接口
+- assets 资源
 
 ## 非业务TODO
 - [x] 状态管理
