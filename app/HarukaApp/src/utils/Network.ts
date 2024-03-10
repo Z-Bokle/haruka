@@ -1,6 +1,7 @@
 import { useCallback } from 'react';
 import { useGlobalStore } from './AppStores';
 import { ToastAndroid } from 'react-native';
+import { deleteItem } from './SecurityStoarge';
 
 /** 是否实现了toString方法 */
 type Serializable<T> = 'toString' extends keyof T ? T : never;
@@ -54,9 +55,10 @@ function buildForm(data: Record<string, any>) {
  * 如果不需要这些逻辑，请直接使用fetch API
  */
 export const useNetwork = () => {
-  const { baseUrl, token } = useGlobalStore(state => ({
+  const { baseUrl, token, setToken } = useGlobalStore(state => ({
     baseUrl: state.baseUrl,
     token: state.token,
+    setToken: state.setToken,
   }));
 
   const jsonGet = useCallback(
@@ -77,10 +79,14 @@ export const useNetwork = () => {
         }
       } catch (e: any) {
         console.error(e.message);
+        if (e.message === 'jwt expired') {
+          setToken(null);
+          deleteItem('token');
+        }
         ToastAndroid.show(e.message, ToastAndroid.SHORT);
       }
     },
-    [baseUrl, token],
+    [baseUrl, setToken, token],
   );
 
   const jsonPost = useCallback(
@@ -102,10 +108,14 @@ export const useNetwork = () => {
         }
       } catch (e: any) {
         console.error(e.message);
+        if (e.message === 'jwt expired') {
+          setToken(null);
+          deleteItem('token');
+        }
         ToastAndroid.show(e.message, ToastAndroid.SHORT);
       }
     },
-    [baseUrl, token],
+    [baseUrl, setToken, token],
   );
 
   const formPost = useCallback(
@@ -127,10 +137,14 @@ export const useNetwork = () => {
         }
       } catch (e: any) {
         console.error(e.message);
+        if (e.message === 'jwt expired') {
+          setToken(null);
+          deleteItem('token');
+        }
         ToastAndroid.show(e.message, ToastAndroid.SHORT);
       }
     },
-    [baseUrl, token],
+    [baseUrl, setToken, token],
   );
 
   return {

@@ -29,7 +29,7 @@ const SessionView = () => {
 
   const [session, setSession] = useState<Session>();
   const [prePromptId, setPrePromptId] = useState<number>();
-  const [isSaved, setIsSaved] = useState(true);
+  // const [isSaved, setIsSaved] = useState(true);
   const [isGeneratingText, setisGeneratingText] = useState(false);
 
   const [buttonValue, setButtonValue] = useState('');
@@ -52,6 +52,12 @@ const SessionView = () => {
   /** 实际标题的相对位置 */
   const actualAnchorTops = anchorTops.map((top, _, arr) => top - arr[0]);
 
+  const isTextEnabled = session?.step && session?.step <= 1;
+  const isAudioEnabled =
+    session?.step && session?.step <= 2 && session.step > 0;
+  const isVideoEnabled =
+    session?.step && session?.step <= 3 && session.step > 1;
+
   useEffect(() => {
     (async () => {
       if (!sessionUUID) {
@@ -67,9 +73,9 @@ const SessionView = () => {
     })();
   }, [jsonGet, navigation, sessionUUID]);
 
-  useEffect(() => {
-    setIsSaved(false);
-  }, [session]);
+  // useEffect(() => {
+  //   setIsSaved(false);
+  // }, [session]);
 
   const handleGenerateText = useCallback(async () => {
     if (isGeneratingText) {
@@ -93,6 +99,7 @@ const SessionView = () => {
       setSession(prevSession => ({
         ...(prevSession as Session),
         text,
+        step: 1,
       }));
     }
     setisGeneratingText(false);
@@ -110,6 +117,7 @@ const SessionView = () => {
               value: 'text-button',
               label: '文本',
               icon: 'text',
+              disabled: !isTextEnabled,
               onPress: () =>
                 scrollViewRef.current?.scrollTo({
                   y: actualAnchorTops[0],
@@ -120,7 +128,7 @@ const SessionView = () => {
               value: 'audio-button',
               label: '音频',
               icon: 'music',
-              disabled: (session?.step ?? 0) <= 0,
+              disabled: !isAudioEnabled,
               onPress: () =>
                 scrollViewRef.current?.scrollTo({
                   y: actualAnchorTops[1],
@@ -131,7 +139,7 @@ const SessionView = () => {
               value: 'video-button',
               label: '视频',
               icon: 'video',
-              disabled: (session?.step ?? 0) <= 1,
+              disabled: !isVideoEnabled,
               onPress: () =>
                 scrollViewRef.current?.scrollTo({
                   y: actualAnchorTops[2],
@@ -172,6 +180,7 @@ const SessionView = () => {
           </View>
           <FormItem label="模型">
             <Selector
+              disabled={!isTextEnabled}
               options={models.map(model => ({
                 key: model.modelId,
                 label: model.modelName,
@@ -183,6 +192,7 @@ const SessionView = () => {
                 }))
               }>
               <Button
+                disabled={!isTextEnabled}
                 onPress={() => modelSelectorRef.current?.open()}
                 mode="contained-tonal">
                 <Text variant="bodyMedium">
@@ -194,6 +204,7 @@ const SessionView = () => {
           </FormItem>
           <FormItem label="提示词预设">
             <Selector
+              disabled={!isTextEnabled}
               options={prePrompts.map(prePrompt => ({
                 key: prePrompt.id,
                 label: prePrompt.name,
@@ -209,6 +220,7 @@ const SessionView = () => {
                 }));
               }}>
               <Button
+                disabled={!isTextEnabled}
                 onPress={() => prePromptSelectorRef.current?.open()}
                 mode="contained-tonal">
                 <Text variant="bodyMedium">
@@ -225,6 +237,7 @@ const SessionView = () => {
             mode="vertical">
             <TextInput
               multiline
+              disabled={!isTextEnabled}
               maxLength={PROMPT_MAX_LENGTH}
               value={session.prompt}
               onChangeText={text =>
@@ -239,6 +252,7 @@ const SessionView = () => {
           <FormItem label="API KEY" mode="vertical">
             <TextInput
               value={session.apiKey}
+              disabled={!isTextEnabled}
               onChangeText={apiKey =>
                 setSession(prevSession => ({
                   ...(prevSession as Session),
@@ -250,6 +264,7 @@ const SessionView = () => {
 
           <View style={style.inlineSingleButtonView}>
             <Button
+              disabled={!isTextEnabled}
               mode="elevated"
               onPress={handleGenerateText}
               loading={isGeneratingText}>
@@ -258,10 +273,13 @@ const SessionView = () => {
           </View>
 
           <FormItem label="新闻文本" mode="vertical">
-            <TextInput value={session.text} readOnly />
+            <TextInput
+              disabled={!isTextEnabled}
+              multiline
+              value={session.text}
+              readOnly
+            />
           </FormItem>
-
-          <FormItem></FormItem>
 
           <Divider bold />
           <View
@@ -279,7 +297,14 @@ const SessionView = () => {
             }}>
             <Text variant="displaySmall">音频</Text>
           </View>
-          {/* <View style={{ height: 1000 }} /> */}
+
+          <View style={style.inlineSingleButtonView}>
+            <Button disabled={!isAudioEnabled} mode="elevated">
+              生成音频
+            </Button>
+          </View>
+
+          <Divider />
           <View
             style={style.titleView}
             ref={anchorRefs[2]}
@@ -295,7 +320,22 @@ const SessionView = () => {
             }}>
             <Text variant="displaySmall">视频</Text>
           </View>
-          {/* <View style={{ height: 1000 }} /> */}
+          <FormItem label="原视频" mode="vertical">
+            <View style={style.inlineButtonView}>
+              <Button disabled={!isVideoEnabled} mode="elevated">
+                从文件选择
+              </Button>
+              <Button disabled={!isVideoEnabled} mode="elevated">
+                录制
+              </Button>
+            </View>
+            {session.baseVideoFrame && <Text>预留给视频帧预览</Text>}
+          </FormItem>
+          <View style={style.inlineSingleButtonView}>
+            <Button disabled={!isVideoEnabled} mode="elevated">
+              生成视频
+            </Button>
+          </View>
         </ScrollView>
       )}
     </View>
@@ -327,6 +367,11 @@ const style = StyleSheet.create({
   inlineSingleButtonView: {
     flexDirection: 'row',
     justifyContent: 'flex-end',
+    padding: 10,
+  },
+  inlineButtonView: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
     padding: 10,
   },
 });
