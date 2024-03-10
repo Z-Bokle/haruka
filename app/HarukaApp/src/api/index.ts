@@ -23,4 +23,5 @@ export const media = {
   generateAudio: '/media/audio/generate',
   generateVideo: '/media/video/generate',
   uploadBaseVideo: '/media/video/base/upload',
+  stream: '/media/stream',
 };

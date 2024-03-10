@@ -1,26 +1,33 @@
 import {
   Body,
   Controller,
+  Get,
   Headers,
+  Response,
   Post,
+  StreamableFile,
   UploadedFile,
   UseInterceptors,
   UsePipes,
+  Query,
 } from '@nestjs/common';
 import { MediaService } from './media.service';
 import {
   GenerateAudioDTO,
   GenerateVideoDTO,
+  // MediaStreamDTO,
   UploadBaseVideoDTO,
 } from './media.dto';
 import { FileInterceptor } from '@nestjs/platform-express';
-import { ApiBody, ApiConsumes } from '@nestjs/swagger';
+import { ApiBody, ApiConsumes, ApiQuery } from '@nestjs/swagger';
 import { FileValidationPipe } from 'src/pipes/filevalidation.pipe';
-import { Request } from 'express';
+import { Request, Response as ExpressResponse } from 'express';
 import {
   SessionNotFoundException,
   UserNotFoundException,
 } from 'src/exceptions/exceptions';
+import { createReadStream, statSync } from 'fs';
+import { Public } from 'src/decorators/public.decorator';
 
 @Controller('media')
 export class MediaController {
@@ -40,7 +47,8 @@ export class MediaController {
     const sessionUUID = body.sessionUUID;
     const userId = parseInt(userIdStr as string);
 
-    return await this.mediaService.generateAudio(sessionUUID, userId);
+    const result = await this.mediaService.generateAudio(sessionUUID, userId);
+    return result.audioUUID;
   }
 
   @Post('video/generate')
@@ -57,7 +65,8 @@ export class MediaController {
     const sessionUUID = body.sessionUUID;
     const userId = parseInt(userIdStr as string);
 
-    return await this.mediaService.generateVideo(sessionUUID, userId);
+    const result = await this.mediaService.generateVideo(sessionUUID, userId);
+    return result.videoUUID;
   }
 
   @ApiConsumes('multipart/form-data')
@@ -93,5 +102,33 @@ export class MediaController {
       sessionUUID,
     );
     return result;
+  }
+
+  @Get('stream')
+  @ApiQuery({ name: 'sessionUUID', required: true })
+  @ApiQuery({ name: 'resourceUUID', required: true })
+  @Public()
+  async getMediaStream(
+    @Query('sessionUUID') sessionUUID: string,
+    @Query('resourceUUID') resourceUUID: string,
+    @Response({ passthrough: true }) res: ExpressResponse,
+  ) {
+    if (!sessionUUID) {
+      throw new SessionNotFoundException();
+    }
+
+    const { path, mime, prefix } = await this.mediaService.getMediaFilePath(
+      sessionUUID,
+      resourceUUID,
+    );
+
+    res.set({
+      'Content-Type': mime,
+      'Content-Disposition': `attachment; filename=${resourceUUID}.${prefix}`,
+    });
+
+    const fileStream = createReadStream(path);
+
+    return new StreamableFile(fileStream);
   }
 }

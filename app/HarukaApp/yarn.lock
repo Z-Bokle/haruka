@@ -5788,6 +5788,18 @@ react-native-sensitive-info@^6.0.0-alpha.9:
   resolved "https://registry.npmjs.org/react-native-sensitive-info/-/react-native-sensitive-info-6.0.0-alpha.9.tgz#b488fab715d36efdf80b377a21545cfe888ab8d2"
   integrity sha512-W2R1gUHgBAmy+wVl0BvA7s01SqqTitnG4Sdj2zmck0OS5a54kq+pTnXRqDljMa2NQs4Mue2IHyvd+Tf0X1ZL6Q==
 
+react-native-sound-playerview@^1.0.0:
+  version "1.0.0"
+  resolved "https://registry.npmjs.org/react-native-sound-playerview/-/react-native-sound-playerview-1.0.0.tgz#0b86f65d8abd059f5aac5a12e850c6b6a6dfc571"
+  integrity sha512-KdEs3egnQy2njjx2StR8CW9WDJiWpSpp50YoLrTaWfmSIeo3ROIIvh/hlbzxDxNTvn5tAq6VyvymIw52pDAMdQ==
+  dependencies:
+    react-native-sound "*"
+
+react-native-sound@*, react-native-sound@^0.11.2:
+  version "0.11.2"
+  resolved "https://registry.npmjs.org/react-native-sound/-/react-native-sound-0.11.2.tgz#e542dc5b9e16ab4b3ac7e6eaddb1fc8d98da9038"
+  integrity sha512-LmGc8lgOK3qecYMVQpyHvww/C+wgT6sWeMpVbOe4NCRGC2yKd4fo4U0KBUo9PO7AqKESO3I/2GZg1/C0+bwiiA==
+
 react-native-vector-icons@^10.0.3:
   version "10.0.3"
   resolved "https://registry.npmjs.org/react-native-vector-icons/-/react-native-vector-icons-10.0.3.tgz#369824a3b17994b2cd65edbaa32dbf9540d49678"

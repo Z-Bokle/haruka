@@ -1,7 +1,7 @@
 import { NotImplementedException } from '@nestjs/common';
 import { getUUID } from 'src/utils/uuid';
 import { execFile } from 'child_process';
-import { posix } from 'path';
+import { join, posix } from 'path';
 
 export enum TaskType {
   TEXT,
@@ -147,10 +147,11 @@ export class AudioTask extends Task<AudioTaskResult> {
   }
 
   async doTask() {
+    // TODO Audio Task 与路径
     console.log('Audio task', this.text);
     const result = {
       audioUUID: this.uuid,
-      audioFilePath: '完整路径',
+      audioFilePath: join(process.cwd(), 'statics', 'audio', 'example.wav'),
     };
     return result;
   }
@@ -168,10 +169,11 @@ export class VideoTask extends Task<VideoTaskResult> {
   }
 
   async doTask() {
+    // TODO Video Task 与路径
     console.log('Video task', this.baseVideoFilePath, this.audioFilePath);
     const result = {
       videoUUID: this.uuid,
-      videoFilePath: '完整路径',
+      videoFilePath: join(process.cwd(), 'statics', 'video', 'example.mp4'),
     };
     return result;
   }

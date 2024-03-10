@@ -135,4 +135,15 @@ export class MediaService {
 
     return result;
   }
+
+  async getMediaFilePath(sessionUUID: string, resuorceUUID: string) {
+    const session = await this.sessionService.findOneWithoutUserId(sessionUUID);
+    if (session?.audioUUID === resuorceUUID) {
+      return { path: session.audioFilePath, mime: 'audio/wav', prefix: 'wav' };
+    } else if (session?.videoUUID === resuorceUUID) {
+      return { path: session.videoFilePath, mime: 'video/mp4', prefix: 'mp4' };
+    } else {
+      throw new AssetsLostException();
+    }
+  }
 }

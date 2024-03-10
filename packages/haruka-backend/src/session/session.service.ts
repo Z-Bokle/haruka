@@ -77,6 +77,20 @@ export class SessionService {
     return sessions.sort((s1, s2) => s2.lastModified - s1.lastModified);
   }
 
+  async findOneWithoutUserId(sessionUUID: string) {
+    if (!sessionUUID) {
+      throw new SessionNotFoundException();
+    }
+    const session = await this.sessionRepository.findOne({
+      where: {
+        sessionUUID,
+        isAvailable: 1,
+      },
+    });
+
+    return session;
+  }
+
   async createSession(userId: number) {
     const session = this.sessionRepository.create({
       sessionUUID: getUUID(),

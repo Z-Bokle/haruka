@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { ScrollView, StyleSheet, ToastAndroid, View } from 'react-native';
 import { joinQueries, useNetwork } from '../../utils/Network';
-import { session as sessionApi, text as textApi } from '../../api';
+import { media, session as sessionApi, text as textApi } from '../../api';
 import { Session } from '../../components/SessionCard';
 import {
   Button,
@@ -16,11 +16,12 @@ import { useModels } from '../../hooks/useModels';
 import ModalSelector from 'react-native-modal-selector';
 import Selector from '../../components/Selector';
 import { usePreprompts } from '../../hooks/usePrePrompts';
+import AudioPlayer from '../../components/AudioPlayer';
 
 const PROMPT_MAX_LENGTH = 100;
 
 const SessionView = () => {
-  const { jsonPost, jsonGet } = useNetwork();
+  const { jsonPost, jsonGet, baseUrl } = useNetwork();
 
   const navigation: any = useNavigation();
   const route = useRoute();
@@ -31,6 +32,7 @@ const SessionView = () => {
   const [prePromptId, setPrePromptId] = useState<number>();
   // const [isSaved, setIsSaved] = useState(true);
   const [isGeneratingText, setisGeneratingText] = useState(false);
+  const [isGeneratingAudio, setisGeneratingAudio] = useState(false);
 
   const [buttonValue, setButtonValue] = useState('');
 
@@ -104,6 +106,27 @@ const SessionView = () => {
     }
     setisGeneratingText(false);
   }, [isGeneratingText, jsonPost, session]);
+
+  const handleGenerateAudio = useCallback(async () => {
+    if (isGeneratingAudio) {
+      return;
+    }
+    setisGeneratingAudio(true);
+    const result = await jsonPost(media.generateAudio, {
+      sessionUUID: session?.sessionUUID,
+    });
+    if (!result) {
+      return;
+    } else {
+      ToastAndroid.show('音频生成成功', ToastAndroid.SHORT);
+      setSession(prevSession => ({
+        ...(prevSession as Session),
+        audioUUID: result,
+        step: 2,
+      }));
+    }
+    setisGeneratingAudio(false);
+  }, [isGeneratingAudio, jsonPost, session]);
 
   return (
     <View style={style.constainer}>
@@ -299,10 +322,25 @@ const SessionView = () => {
           </View>
 
           <View style={style.inlineSingleButtonView}>
-            <Button disabled={!isAudioEnabled} mode="elevated">
+            <Button
+              disabled={!isAudioEnabled}
+              mode="elevated"
+              loading={isGeneratingAudio}
+              onPress={handleGenerateAudio}>
               生成音频
             </Button>
           </View>
+
+          {session.audioUUID && (
+            <FormItem label="音频" mode="vertical">
+              <AudioPlayer
+                uri={`${baseUrl}${media.stream}?${joinQueries({
+                  sessionUUID: session.sessionUUID,
+                  resourceUUID: session.audioUUID,
+                })}`}
+              />
+            </FormItem>
+          )}
 
           <Divider />
           <View
@@ -331,11 +369,13 @@ const SessionView = () => {
             </View>
             {session.baseVideoFrame && <Text>预留给视频帧预览</Text>}
           </FormItem>
-          <View style={style.inlineSingleButtonView}>
-            <Button disabled={!isVideoEnabled} mode="elevated">
-              生成视频
-            </Button>
-          </View>
+          {session.baseVideoFrame && (
+            <View style={style.inlineSingleButtonView}>
+              <Button disabled={!isVideoEnabled} mode="elevated">
+                生成视频
+              </Button>
+            </View>
+          )}
         </ScrollView>
       )}
     </View>

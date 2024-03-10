@@ -21,3 +21,11 @@ export class UploadBaseVideoDTO {
   @ApiProperty({ required: true, description: '上传视频的 Session UUID' })
   sessionUUID: string;
 }
+
+// export class MediaStreamDTO {
+//   @ApiProperty({ required: true, description: '需要查看资源的Session UUID' })
+//   sessionUUID: string;
+
+//   @ApiProperty({ required: true, description: '资源UUID' })
+//   resourceUUID: string;
+// }
