@@ -26,7 +26,7 @@ import {
   SessionNotFoundException,
   UserNotFoundException,
 } from 'src/exceptions/exceptions';
-import { createReadStream, statSync } from 'fs';
+import { createReadStream } from 'fs';
 import { Public } from 'src/decorators/public.decorator';
 
 @Controller('media')

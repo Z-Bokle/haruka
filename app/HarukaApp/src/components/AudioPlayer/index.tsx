@@ -43,6 +43,8 @@ const AudioPlayer = (props: AudioPlayerProps) => {
     }
   }, [sound]);
 
+  console.log(progress);
+
   const task = useMemo(() => {
     return setInterval(calcProgress, 1000);
   }, [calcProgress]);
@@ -56,26 +58,36 @@ const AudioPlayer = (props: AudioPlayerProps) => {
 
   return (
     <View style={style.container}>
-      <ProgressBar progress={progress} />
-      <Text>{progressStr}</Text>
-      <IconButton
-        icon={!sound.isPlaying() ? 'play' : 'pause'}
-        onPress={() => {
-          if (sound.isPlaying()) {
-            sound.pause(() => {
-              // setIsPlaying(false);
-            });
-          } else {
-            sound.play(success => {
-              // console.log('ssss');
-              // if (success) {
-              //   console.log('success');
-              //   setIsPlaying(true);
-              // }
-            });
-          }
-        }}
-      />
+      <View>
+        <ProgressBar
+          progress={progress}
+          style={style.processBar}
+          color="black"
+        />
+      </View>
+
+      <View style={style.subContainer}>
+        <Text style={style.text}>{progressStr}</Text>
+        <IconButton
+          style={style.icon}
+          icon={!sound.isPlaying() ? 'play' : 'pause'}
+          onPress={() => {
+            if (sound.isPlaying()) {
+              sound.pause(() => {
+                // setIsPlaying(false);
+              });
+            } else {
+              sound.play(success => {
+                // console.log('ssss');
+                // if (success) {
+                //   console.log('success');
+                //   setIsPlaying(true);
+                // }
+              });
+            }
+          }}
+        />
+      </View>
     </View>
   );
 };
@@ -86,6 +98,27 @@ const style = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
+    height: 20,
+  },
+  subContainer: {
+    flex: 1,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'flex-end',
+  },
+  processBar: {
+    flexShrink: 0,
+    flexGrow: 1,
+    // height: 30,
+    width: 180,
+    borderColor: 'black',
+    borderWidth: 0.2,
+  },
+  text: {
+    flexShrink: 1,
+  },
+  icon: {
+    flexShrink: 1,
   },
 });
 

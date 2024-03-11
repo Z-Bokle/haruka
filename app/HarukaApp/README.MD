@@ -14,6 +14,8 @@ Haruka ReactNative 客户端
 10. UI调试 react-devtools
 11. 逻辑与网络调试 Reactotron
 12. 弹窗选择器 react-native-modal-selector
+13. 进度条 react-native-progress
+14. 音频 react-native-sound
 
 ## 项目结构(仅RN部分)
 - components 组件  
