@@ -9,7 +9,7 @@ import { useNetwork } from '../../utils/Network';
 import { user } from '../../api';
 
 const Authorization = ({ navigation }) => {
-  const videoRef = useRef<Video>(null);
+  // const videoRef = useRef<Video>(null);
   const bgVideo = require('../../assets/videos/auth_bg.mp4');
 
   const [status, setStatus] = useState<'none' | 'register' | 'login'>('none');
@@ -87,7 +87,7 @@ const Authorization = ({ navigation }) => {
       )}
       <Video
         source={bgVideo}
-        ref={videoRef}
+        // ref={videoRef}
         style={styles.videoPlayer}
         resizeMode="stretch"
         repeat

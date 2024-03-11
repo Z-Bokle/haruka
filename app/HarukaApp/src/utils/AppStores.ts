@@ -7,10 +7,6 @@ export interface GlobalStore {
 
   baseUrl: string;
   setBaseUrl: (baseUrl: string) => void;
-
-  // currentSessionUUID?: string;
-  // setCurrentSessionUUID: (uuid: string) => void;
-  // clearCurrentSessionUUID: () => void;
 }
 
 export interface ShowDialogConfigs {
@@ -36,12 +32,9 @@ const useGlobalStore = create<GlobalStore>(set => ({
   setToken: (token: string | null) => set({ token }),
   clearToken: () => set({ token: null }),
 
-  baseUrl: 'http://10.136.12.203:3000',
-  // baseUrl: 'http://192.168.167.15:3000',
+  // baseUrl: 'http://10.136.12.203:3000',
+  baseUrl: 'http://192.168.167.15:3000',
   setBaseUrl: (baseUrl: string) => set({ baseUrl }),
-
-  // setCurrentSessionUUID: (uuid: string) => set({ currentSessionUUID: uuid }),
-  // clearCurrentSessionUUID: () => set({ currentSessionUUID: undefined }),
 }));
 
 const useDialog = create<DialogStore>(set => ({

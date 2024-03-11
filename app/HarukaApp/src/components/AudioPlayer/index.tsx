@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
-import { StyleSheet, ToastAndroid, View } from 'react-native';
+import { Dimensions, StyleSheet, ToastAndroid, View } from 'react-native';
 import { IconButton, ProgressBar, Text } from 'react-native-paper';
 import Sound from 'react-native-sound';
 
@@ -54,13 +54,17 @@ const AudioPlayer = (props: AudioPlayerProps) => {
   }, [sound]);
 
   const task = useMemo(() => {
+    if (task) {
+      // 新建定时器任务前清除已有的任务
+      clearInterval(task);
+    }
     return setInterval(calcProgress, 1000);
   }, [calcProgress]);
 
   useEffect(() => {
     return () => {
       sound?.release();
-      clearInterval(task);
+      task && clearInterval(task);
     };
   }, [sound, task]);
 
@@ -81,32 +85,33 @@ const AudioPlayer = (props: AudioPlayerProps) => {
         />
       </View>
 
-      <View style={style.subContainer}>
+      <View>
         <Text style={style.text}>{progressStr}</Text>
-        {isLoaded ? (
-          <IconButton
-            mode="contained"
-            style={style.icon}
-            icon={!sound?.isPlaying() ? 'play' : 'pause'}
-            onPress={() => {
-              if (sound?.isPlaying()) {
-                sound?.pause();
-              } else {
-                sound?.play();
-              }
-            }}
-          />
-        ) : (
-          <IconButton
-            mode="contained"
-            style={style.icon}
-            icon="download"
-            onPress={() => {
-              setResource(uri);
-            }}
-          />
-        )}
       </View>
+
+      {isLoaded ? (
+        <IconButton
+          mode="contained"
+          style={style.icon}
+          icon={!sound?.isPlaying() ? 'play' : 'pause'}
+          onPress={() => {
+            if (sound?.isPlaying()) {
+              sound?.pause();
+            } else {
+              sound?.play();
+            }
+          }}
+        />
+      ) : (
+        <IconButton
+          mode="contained"
+          style={style.icon}
+          icon="download"
+          onPress={() => {
+            setResource(uri);
+          }}
+        />
+      )}
     </View>
   );
 };
@@ -117,8 +122,9 @@ const style = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    height: 20,
+    // height: 20,
     marginVertical: 10,
+    // backgroundColor: 'red',
   },
   subContainer: {
     flex: 1,
@@ -129,10 +135,10 @@ const style = StyleSheet.create({
   processBar: {
     flexShrink: 0,
     flexGrow: 1,
-    // height: 30,
-    width: 180,
+    width: Dimensions.get('window').width / 2.8,
     borderColor: 'black',
     borderWidth: 0.2,
+    borderRadius: 999,
   },
   text: {
     flexShrink: 1,

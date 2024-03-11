@@ -1,21 +1,23 @@
 # Haruka APP
 Haruka ReactNative 客户端
 
-## 第三方依赖
-1. 状态管理 zustand
+## 各功能组件与第三方依赖
+1. 状态管理 zustand / useState
 2. 页面导航 react-navigation
 3. UI组件库 react-native-paper
 4. 图标 react-native-vector-icons
 5. 网络请求 原生fetch封装
 6. 安全存储 react-native-sensitive-info
-7. 视频录制 react-native-vision-camera
-8. 视频播放 react-native-video
-9. 毛玻璃 react-native-blur
-10. UI调试 react-devtools
-11. 逻辑与网络调试 Reactotron
-12. 弹窗选择器 react-native-modal-selector
-13. 进度条 react-native-progress
-14. 音频 react-native-sound
+7. 视频播放 react-native-video
+8. 毛玻璃 react-native-blur
+9.  弹窗选择器 react-native-modal-selector
+10. 进度条 react-native-progress
+11. 音频播放 react-native-sound
+12. 相册资源管理 react-native-image-picker
+
+## 开发工具
+1. UI调试 react-devtools
+2. JS逻辑与网络调试 Reactotron
 
 ## 项目结构(仅RN部分)
 - components 组件  

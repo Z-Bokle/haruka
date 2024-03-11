@@ -17,11 +17,13 @@ import ModalSelector from 'react-native-modal-selector';
 import Selector from '../../components/Selector';
 import { usePreprompts } from '../../hooks/usePrePrompts';
 import AudioPlayer from '../../components/AudioPlayer';
+import { useVideoManager } from '../../utils/MediaManager';
+import VideoPlayer from '../../components/VideoPlayer';
 
 const PROMPT_MAX_LENGTH = 100;
 
 const SessionView = () => {
-  const { jsonPost, jsonGet, baseUrl } = useNetwork();
+  const { jsonPost, jsonGet, formPost, baseUrl } = useNetwork();
 
   const navigation: any = useNavigation();
   const route = useRoute();
@@ -39,6 +41,8 @@ const SessionView = () => {
   const { models } = useModels();
   const { prePrompts } = usePreprompts();
 
+  const { asset, getVideoByCamera, getVideoFromLocal } = useVideoManager();
+
   const modelSelectorRef = useRef<ModalSelector>(null);
   const prePromptSelectorRef = useRef<ModalSelector>(null);
 
@@ -54,11 +58,11 @@ const SessionView = () => {
   /** 实际标题的相对位置 */
   const actualAnchorTops = anchorTops.map((top, _, arr) => top - arr[0]);
 
-  const isTextEnabled = session?.step && session?.step <= 1;
+  const isTextEnabled = session?.step !== undefined && session?.step <= 1;
   const isAudioEnabled =
-    session?.step && session?.step <= 2 && session.step > 0;
+    session?.step !== undefined && session?.step <= 2 && session.step > 0;
   const isVideoEnabled =
-    session?.step && session?.step <= 3 && session.step > 1;
+    session?.step !== undefined && session?.step <= 3 && session.step > 1;
 
   useEffect(() => {
     (async () => {
@@ -74,10 +78,6 @@ const SessionView = () => {
       setSession(data);
     })();
   }, [jsonGet, navigation, sessionUUID]);
-
-  // useEffect(() => {
-  //   setIsSaved(false);
-  // }, [session]);
 
   const handleGenerateText = useCallback(async () => {
     if (isGeneratingText) {
@@ -127,6 +127,21 @@ const SessionView = () => {
     }
     setisGeneratingAudio(false);
   }, [isGeneratingAudio, jsonPost, session]);
+
+  const handleUploadBaseAudio = useCallback(async () => {
+    if (!asset) {
+      ToastAndroid.show('未选择资源', ToastAndroid.SHORT);
+      return;
+    }
+    const result = await formPost(media.uploadBaseVideo, {
+      file: {
+        uri: asset.uri,
+        type: asset.type,
+      },
+      sessionUUID: session?.sessionUUID,
+    });
+    console.log(result);
+  }, [formPost, session, asset]);
 
   return (
     <View style={style.constainer}>
@@ -332,7 +347,7 @@ const SessionView = () => {
           </View>
 
           {session.audioUUID && (
-            <FormItem label="音频" mode="vertical">
+            <FormItem label="音频预览" mode="vertical">
               <AudioPlayer
                 uri={`${baseUrl}${media.stream}?${joinQueries({
                   sessionUUID: session.sessionUUID,
@@ -360,13 +375,34 @@ const SessionView = () => {
           </View>
           <FormItem label="原视频" mode="vertical">
             <View style={style.inlineButtonView}>
-              <Button disabled={!isVideoEnabled} mode="elevated">
+              <Button
+                disabled={!isVideoEnabled}
+                mode="elevated"
+                onPress={() => getVideoFromLocal()}>
                 从文件选择
               </Button>
-              <Button disabled={!isVideoEnabled} mode="elevated">
+              <Button
+                disabled={!isVideoEnabled}
+                mode="elevated"
+                onPress={() => getVideoByCamera()}>
                 录制
               </Button>
             </View>
+            {asset && asset.uri && (
+              <View>
+                <VideoPlayer source={{ uri: asset.uri }} />
+              </View>
+            )}
+            {asset && asset.uri && (
+              <View style={style.inlineSingleButtonView}>
+                <Button
+                  disabled={!isVideoEnabled}
+                  mode="elevated"
+                  onPress={handleUploadBaseAudio}>
+                  上传原视频
+                </Button>
+              </View>
+            )}
             {session.baseVideoFrame && <Text>预留给视频帧预览</Text>}
           </FormItem>
           {session.baseVideoFrame && (
@@ -413,6 +449,10 @@ const style = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     padding: 10,
+  },
+  videoPlayer: {
+    width: '100%',
+    height: 500,
   },
 });
 

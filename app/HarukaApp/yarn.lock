@@ -5744,6 +5744,11 @@ react-native-gesture-handler@^2.15.0:
     lodash "^4.17.21"
     prop-types "^15.7.2"
 
+react-native-image-picker@^7.1.0:
+  version "7.1.0"
+  resolved "https://registry.npmjs.org/react-native-image-picker/-/react-native-image-picker-7.1.0.tgz#1a41cc45ccdc177c2ebf7c7accee0ceadc36abd8"
+  integrity sha512-An0hn2mwqjGAA2mbsXdHRTyoMMklGPT9stIjE2zvkegU7CdoFhowqvVHfnELJNZnfAiSQuIaeY//z0r1R0lsgw==
+
 react-native-modal-selector@^2.1.2:
   version "2.1.2"
   resolved "https://registry.npmjs.org/react-native-modal-selector/-/react-native-modal-selector-2.1.2.tgz#c9fae030baf8bb2c5419e766ff63c31fc946f396"
@@ -5810,11 +5815,6 @@ react-native-video@^5.2.1:
     keymirror "^0.1.1"
     prop-types "^15.7.2"
     shaka-player "^2.5.9"
-
-react-native-vision-camera@^3.9.1:
-  version "3.9.1"
-  resolved "https://registry.npmjs.org/react-native-vision-camera/-/react-native-vision-camera-3.9.1.tgz#78eb9da9fcd1cf2ee2562ec18ab8966e0215ab1b"
-  integrity sha512-Pi9ikguJlN1ydVZOyRaMfUij1raUY93rVuPM92BsGnXEfxSLbvRYXW4ll1DRtVtjS0kZq4IW7Oavg8syRPc/xQ==
 
 react-native@*, react-native@0.73.5:
   version "0.73.5"
