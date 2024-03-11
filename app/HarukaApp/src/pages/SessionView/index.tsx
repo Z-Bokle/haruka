@@ -128,18 +128,21 @@ const SessionView = () => {
     setisGeneratingAudio(false);
   }, [isGeneratingAudio, jsonPost, session]);
 
-  const handleUploadBaseAudio = useCallback(async () => {
-    if (!asset) {
+  const handleUploadBaseVideo = useCallback(async () => {
+    if (!asset || !asset.uri) {
       ToastAndroid.show('未选择资源', ToastAndroid.SHORT);
       return;
     }
-    const result = await formPost(media.uploadBaseVideo, {
-      file: {
-        uri: asset.uri,
-        type: asset.type,
-      },
-      sessionUUID: session?.sessionUUID,
+
+    const formData = new FormData();
+    formData.append('file', {
+      uri: asset.uri,
+      name: asset.fileName,
+      type: asset.type,
     });
+    formData.append('sessionUUID', session?.sessionUUID);
+
+    const result = await formPost(media.uploadBaseVideo, formData);
     console.log(result);
   }, [formPost, session, asset]);
 
@@ -402,7 +405,7 @@ const SessionView = () => {
                 <Button
                   disabled={!isVideoEnabled}
                   mode="elevated"
-                  onPress={handleUploadBaseAudio}>
+                  onPress={handleUploadBaseVideo}>
                   上传原视频
                 </Button>
               </View>

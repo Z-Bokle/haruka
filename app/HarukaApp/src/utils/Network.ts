@@ -37,13 +37,13 @@ function buildHeaders(config: { [key: string]: any }) {
   return headers;
 }
 
-function buildForm(data: Record<string, any>) {
-  const formData = new FormData();
-  for (const key in data) {
-    formData.append(key, data[key]);
-  }
-  return formData;
-}
+// function buildForm(data: Record<string, any>) {
+//   const formData = new FormData();
+//   for (const key in data) {
+//     formData.append(key, data[key]);
+//   }
+//   return formData;
+// }
 
 /**
  * Hooks形式获取到的方法可以在运行时中拿到状态管理的baseUrl并自动拼接
@@ -119,15 +119,15 @@ export const useNetwork = () => {
   );
 
   const formPost = useCallback(
-    async (url: string, data: Record<string, any> = {}) => {
+    async (url: string, data: FormData) => {
       try {
         const res = await fetch(`${baseUrl}${url}`, {
           method: 'POST',
           headers: buildHeaders({
             Authorization: token,
-            'Content-Type': 'application/x-www-form-urlencoded',
+            'Content-Type': 'multipart/form-data',
           }),
-          body: buildForm(data),
+          body: data,
         });
         const json = await res.json();
         if (json.errorCode === 0 || !json.errorCode) {

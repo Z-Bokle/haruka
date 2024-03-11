@@ -77,3 +77,10 @@ export class ScriptRuntimeException extends BaseHttpException {
     this.errorCode = 610;
   }
 }
+
+export class FileLostException extends BaseHttpException {
+  constructor() {
+    super('上传文件不能为空');
+    this.errorCode = 611;
+  }
+}

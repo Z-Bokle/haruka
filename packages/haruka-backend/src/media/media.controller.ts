@@ -23,6 +23,7 @@ import { ApiBody, ApiConsumes, ApiQuery } from '@nestjs/swagger';
 import { FileValidationPipe } from 'src/pipes/filevalidation.pipe';
 import { Request, Response as ExpressResponse } from 'express';
 import {
+  FileLostException,
   SessionNotFoundException,
   UserNotFoundException,
 } from 'src/exceptions/exceptions';
@@ -69,18 +70,27 @@ export class MediaController {
     return result.videoUUID;
   }
 
+  // @UsePipes(
+  //   new FileValidationPipe({
+  //     maxSize: 20 * 1024 * 1024,
+  //     errorMessage: '视频文件大小超出限制，最多20MB',
+  //     fileField: 'file',
+  //   }),
+  // )
+
   @ApiConsumes('multipart/form-data')
   @ApiBody({
     description: '上传用于视频合成的原视频文件',
     type: UploadBaseVideoDTO,
   })
   @Post('video/base/upload')
-  @UsePipes(
-    new FileValidationPipe(20 * 1024 * 1024, '视频文件大小超出限制，最多20MB'),
+  @UseInterceptors(
+    FileInterceptor('file', {
+      limits: { fieldSize: 20 * 1024 * 1024 },
+    }),
   )
-  @UseInterceptors(FileInterceptor('file'))
   async uploadBaseVideo(
-    @UploadedFile()
+    @UploadedFile('file')
     file: Express.Multer.File,
     @Headers() headers: Request['headers'],
     @Body() body: UploadBaseVideoDTO,
@@ -94,6 +104,10 @@ export class MediaController {
 
     if (!sessionUUID) {
       throw new SessionNotFoundException();
+    }
+
+    if (!file) {
+      throw new FileLostException();
     }
 
     const result = await this.mediaService.uploadFile(

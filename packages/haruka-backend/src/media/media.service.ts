@@ -117,6 +117,7 @@ export class MediaService {
   ) {
     const targetPath = join('statics', 'uploads', userIdStr);
     FileManager.createDir(targetPath);
+
     await FileManager.writeFile({
       file,
       targetPath,
