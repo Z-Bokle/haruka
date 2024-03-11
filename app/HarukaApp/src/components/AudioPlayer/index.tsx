@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
-import { StyleSheet, View } from 'react-native';
+import { StyleSheet, ToastAndroid, View } from 'react-native';
 import { IconButton, ProgressBar, Text } from 'react-native-paper';
 import Sound from 'react-native-sound';
 
@@ -14,12 +14,22 @@ const AudioPlayer = (props: AudioPlayerProps) => {
 
   const [progressStr, setProgressStr] = useState('00:00 / 00:00');
   const [progress, setProgress] = useState(0);
-  // const [isPlaying, setIsPlaying] = useState(false);
+  const [isLoaded, setIsLoaded] = useState(false);
+  const [resource, setResource] = useState<string>();
 
   const sound = useMemo(() => {
-    setProgress(0);
-    return new Sound(uri);
-  }, [uri]);
+    if (uri && resource && uri === resource) {
+      setProgress(0);
+      return new Sound(resource, undefined, error => {
+        if (error) {
+          ToastAndroid.show('音频加载失败', ToastAndroid.SHORT);
+        } else {
+          setIsLoaded(true);
+          ToastAndroid.show('音频加载成功', ToastAndroid.SHORT);
+        }
+      });
+    }
+  }, [resource, uri]);
 
   const calcProgress = useCallback(() => {
     if (sound) {
@@ -43,18 +53,23 @@ const AudioPlayer = (props: AudioPlayerProps) => {
     }
   }, [sound]);
 
-  console.log(progress);
-
   const task = useMemo(() => {
     return setInterval(calcProgress, 1000);
   }, [calcProgress]);
 
   useEffect(() => {
     return () => {
-      sound && sound.release();
+      sound?.release();
       clearInterval(task);
     };
   }, [sound, task]);
+
+  useEffect(() => {
+    // 修改uri后自动重置状态
+    if (uri !== resource) {
+      setIsLoaded(false);
+    }
+  }, [resource, uri]);
 
   return (
     <View style={style.container}>
@@ -68,26 +83,29 @@ const AudioPlayer = (props: AudioPlayerProps) => {
 
       <View style={style.subContainer}>
         <Text style={style.text}>{progressStr}</Text>
-        <IconButton
-          mode="contained"
-          style={style.icon}
-          icon={!sound.isPlaying() ? 'play' : 'pause'}
-          onPress={() => {
-            if (sound.isPlaying()) {
-              sound.pause(() => {
-                // setIsPlaying(false);
-              });
-            } else {
-              sound.play(success => {
-                // console.log('ssss');
-                // if (success) {
-                //   console.log('success');
-                //   setIsPlaying(true);
-                // }
-              });
-            }
-          }}
-        />
+        {isLoaded ? (
+          <IconButton
+            mode="contained"
+            style={style.icon}
+            icon={!sound?.isPlaying() ? 'play' : 'pause'}
+            onPress={() => {
+              if (sound?.isPlaying()) {
+                sound?.pause();
+              } else {
+                sound?.play();
+              }
+            }}
+          />
+        ) : (
+          <IconButton
+            mode="contained"
+            style={style.icon}
+            icon="download"
+            onPress={() => {
+              setResource(uri);
+            }}
+          />
+        )}
       </View>
     </View>
   );
