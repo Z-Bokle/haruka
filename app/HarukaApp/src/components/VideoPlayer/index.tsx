@@ -16,19 +16,27 @@ const VideoPlayer = (props: VideoPlayerProps) => {
   const [duration, setDuration] = useState(0);
   const [currentTime, setCurrentTime] = useState(0);
 
+  const [naturalSize, setNaturalSize] = useState({
+    width: 0,
+    height: 0,
+  });
+
   const { height, width, ...restProps } = props;
 
   /** 根据视频宽高比和窗口宽度计算播放器的高度 */
   const playerHeight = useMemo(() => {
-    if (height && width) {
+    const _h = height ?? naturalSize.height;
+    const _w = width ?? naturalSize.width;
+
+    if (_h && _w) {
       const windowWidth = Dimensions.get('window').width;
-      const w = (height / width) * (windowWidth - 100);
+      const w = (_h / _w) * (windowWidth - 100);
       if (w > 0) {
         return w;
       }
       return 300;
     }
-  }, [height, width]);
+  }, [height, naturalSize.height, naturalSize.width, width]);
 
   const playerContainerExtraStyle = useMemo(
     () =>
@@ -64,6 +72,8 @@ const VideoPlayer = (props: VideoPlayerProps) => {
     [currentTime, duration],
   );
 
+  console.log(restProps.source);
+
   return (
     <View style={style.container}>
       <View style={[style.videoContainer, playerContainerExtraStyle.extra]}>
@@ -73,6 +83,10 @@ const VideoPlayer = (props: VideoPlayerProps) => {
           style={style.video}
           paused={!isPlaying}
           onLoad={result => {
+            setNaturalSize({
+              width: result.naturalSize.width,
+              height: result.naturalSize.height,
+            });
             setCurrentTime(result.currentTime);
             setDuration(result.duration);
           }}
@@ -80,6 +94,7 @@ const VideoPlayer = (props: VideoPlayerProps) => {
             setCurrentTime(result.currentTime);
             setDuration(result.seekableDuration);
           }}
+          onError={err => console.log(err.error)}
         />
       </View>
 
@@ -113,6 +128,7 @@ const style = StyleSheet.create({
     padding: 10,
     flex: 1,
     rowGap: 10,
+    // marginBottom: 60,
   },
   video: {
     width: '100%',

@@ -115,6 +115,7 @@ dependencies {
         implementation jscFlavor
     }
     implementation project(':react-native-vector-icons')
+    implementation project(':react-native-fs')
 }
 
 project.ext.vectoricons = [

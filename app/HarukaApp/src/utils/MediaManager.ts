@@ -5,6 +5,10 @@ import {
   launchCamera,
   launchImageLibrary,
 } from 'react-native-image-picker';
+import { joinQueries, useNetwork } from './Network';
+import { media } from '../api';
+// import RNFS from 'react-native-fs';
+import RNFetchBlob from 'rn-fetch-blob';
 
 export const useVideoManager = () => {
   const [asset, setAsset] = useState<Asset>();
@@ -62,5 +66,41 @@ export const useVideoManager = () => {
     getVideoFromLocal,
     getVideoByCamera,
     asset,
+  };
+};
+
+export const useCachedMediaManager = () => {
+  const [fileUri, setFileUri] = useState<string>();
+
+  const { baseUrl } = useNetwork();
+
+  const downloadMediaFile = useCallback(
+    async (sessionUUID: string, resourceUUID: string) => {
+      const targetFilePath = `${RNFetchBlob.fs.dirs.CacheDir}/${sessionUUID}/${resourceUUID}.mp4`;
+      const fromUrl = `${baseUrl}${media.stream}?${joinQueries({
+        sessionUUID,
+        resourceUUID,
+      })}`;
+
+      const response = await RNFetchBlob.config({
+        fileCache: true,
+        appendExt: 'mp4',
+        path: targetFilePath,
+      }).fetch('GET', fromUrl);
+
+      if (response.path()) {
+        const uri = `file://${response.path()}`;
+        const info = response.info();
+        console.log(info);
+        setFileUri(uri);
+        return uri;
+      }
+    },
+    [baseUrl],
+  );
+
+  return {
+    downloadMediaFile,
+    fileUri,
   };
 };

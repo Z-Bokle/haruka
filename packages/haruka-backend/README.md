@@ -13,5 +13,4 @@ Haruka的后端实现
 
 ## TODO
 - [ ] 任务进度查询
-- [ ] baseVideo的缩略图在查询session时给出
 - [x] Session列表按照时间倒序排序

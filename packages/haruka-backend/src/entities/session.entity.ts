@@ -100,6 +100,12 @@ export class Session {
   videoFilePath: string;
 
   @ApiProperty({
+    example: '00a6fa25-df29-4701-9077-557932591766',
+  })
+  @Column({ name: 'base_video_uuid', nullable: true })
+  baseVideoUUID: string;
+
+  @ApiProperty({
     example: '/baseVideo/00a6fa25-df29-4701-9077-557932591766.mp4',
   })
   @Column({ name: 'base_video_file_path', nullable: true })

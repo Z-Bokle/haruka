@@ -35,6 +35,7 @@ export class SessionService {
         videoUUID: null,
         videoFilePath: null,
         baseVideoFilePath: null,
+        baseVideoUUID: null,
       });
     } else if (currentStep === 1) {
       // 清除音频资源

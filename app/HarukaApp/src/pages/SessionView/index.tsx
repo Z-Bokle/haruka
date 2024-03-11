@@ -17,7 +17,10 @@ import ModalSelector from 'react-native-modal-selector';
 import Selector from '../../components/Selector';
 import { usePreprompts } from '../../hooks/usePrePrompts';
 import AudioPlayer from '../../components/AudioPlayer';
-import { useVideoManager } from '../../utils/MediaManager';
+import {
+  useCachedMediaManager,
+  useVideoManager,
+} from '../../utils/MediaManager';
 import VideoPlayer from '../../components/VideoPlayer';
 
 const PROMPT_MAX_LENGTH = 100;
@@ -42,6 +45,8 @@ const SessionView = () => {
   const { prePrompts } = usePreprompts();
 
   const { asset, getVideoByCamera, getVideoFromLocal } = useVideoManager();
+
+  const { downloadMediaFile, fileUri } = useCachedMediaManager();
 
   const modelSelectorRef = useRef<ModalSelector>(null);
   const prePromptSelectorRef = useRef<ModalSelector>(null);
@@ -143,8 +148,29 @@ const SessionView = () => {
     formData.append('sessionUUID', session?.sessionUUID);
 
     const result = await formPost(media.uploadBaseVideo, formData);
-    console.log(result);
+    if (result) {
+      ToastAndroid.show('视频上传成功', ToastAndroid.SHORT);
+      setSession(prevSession => ({
+        ...(prevSession as Session),
+        baseVideoUUID: result,
+      }));
+    }
   }, [formPost, session, asset]);
+
+  useEffect(() => {
+    if (session && session.sessionUUID && session.baseVideoUUID) {
+      downloadMediaFile(session?.sessionUUID, session?.baseVideoUUID).then(
+        () => {
+          ToastAndroid.show('预览视频下载成功', ToastAndroid.SHORT);
+        },
+      );
+    }
+  }, [
+    downloadMediaFile,
+    session,
+    session?.baseVideoUUID,
+    session?.sessionUUID,
+  ]);
 
   return (
     <View style={style.constainer}>
@@ -377,47 +403,47 @@ const SessionView = () => {
             <Text variant="displaySmall">视频</Text>
           </View>
           <FormItem label="原视频" mode="vertical">
+            {((asset && asset.uri) || fileUri) && (
+              <View>
+                <VideoPlayer
+                  source={{
+                    uri: asset?.uri ?? fileUri,
+                  }}
+                  width={asset?.width}
+                  height={asset?.height}
+                />
+              </View>
+            )}
             <View style={style.inlineButtonView}>
               <Button
                 disabled={!isVideoEnabled}
                 mode="elevated"
                 onPress={() => getVideoFromLocal()}>
-                {asset ? '重新' : '从文件'}选择
+                {asset || session.baseVideoUUID ? '重新' : '从文件'}选择
               </Button>
               <Button
                 disabled={!isVideoEnabled}
                 mode="elevated"
                 onPress={() => getVideoByCamera()}>
-                {asset ? '重新' : '用相机'}录制
+                {asset || session.baseVideoUUID ? '重新' : '用相机'}录制
               </Button>
             </View>
-            {asset && asset.uri && (
-              <View>
-                <VideoPlayer
-                  source={{ uri: asset.uri }}
-                  width={asset.width}
-                  height={asset.height}
-                />
-              </View>
-            )}
-            {asset && asset.uri && (
-              <View style={style.inlineSingleButtonView}>
-                <Button
-                  disabled={!isVideoEnabled}
-                  mode="elevated"
-                  onPress={handleUploadBaseVideo}>
-                  上传原视频
-                </Button>
-              </View>
-            )}
-          </FormItem>
-          {session.baseVideoFrame && (
-            <View style={style.inlineSingleButtonView}>
-              <Button disabled={!isVideoEnabled} mode="elevated">
+
+            <View style={style.inlineButtonView}>
+              <Button
+                disabled={!isVideoEnabled && !(asset && asset.uri)}
+                mode="elevated"
+                onPress={handleUploadBaseVideo}>
+                上传原视频
+              </Button>
+              <Button
+                disabled={!isVideoEnabled && !session.baseVideoUUID}
+                mode="elevated">
                 生成视频
               </Button>
             </View>
-          )}
+          </FormItem>
+          <View style={style.bottomBlock} />
         </ScrollView>
       )}
     </View>
@@ -455,6 +481,9 @@ const style = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     padding: 10,
+  },
+  bottomBlock: {
+    height: 200,
   },
 });
 

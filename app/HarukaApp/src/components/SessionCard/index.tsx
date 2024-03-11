@@ -11,8 +11,8 @@ export interface Session {
   sessionUUID: string;
   /** 文本 */
   text?: string;
-  /** BaseVideo的缩略图 */
-  baseVideoFrame?: string;
+  /** BaseVideo的UUID */
+  baseVideoUUID?: string;
   /** 用户ID */
   userId?: number;
   /** 会话步骤 */
@@ -62,7 +62,7 @@ const getTimeStr = (lastModified: number) => {
 };
 
 const SessionCard = (props: SessionProps) => {
-  const { lastModified, sessionUUID, text, baseVideoFrame, onDelete } = props;
+  const { lastModified, sessionUUID, text, onDelete } = props;
 
   const [showMenu, setShowMenu] = useState(false);
 
@@ -77,13 +77,7 @@ const SessionCard = (props: SessionProps) => {
           style={style.card}
           onLongPress={() => setShowMenu(true)}
           onPress={() => navigation.push('SessionView', { sessionUUID })}>
-          <Card.Cover
-            source={
-              baseVideoFrame
-                ? { uri: baseVideoFrame }
-                : getRandomPicture(sessionUUID)
-            }
-          />
+          <Card.Cover source={getRandomPicture(sessionUUID)} />
           <Menu
             visible={showMenu}
             onDismiss={() => setShowMenu(false)}

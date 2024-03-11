@@ -136,6 +136,8 @@ export class MediaController {
       resourceUUID,
     );
 
+    // console.log(path);
+
     res.set({
       'Content-Type': mime,
       'Content-Disposition': `attachment; filename=${resourceUUID}.${prefix}`,
@@ -143,6 +145,8 @@ export class MediaController {
 
     const fileStream = createReadStream(path);
 
-    return new StreamableFile(fileStream);
+    return new StreamableFile(fileStream).setErrorHandler((err) =>
+      console.error(err),
+    );
   }
 }

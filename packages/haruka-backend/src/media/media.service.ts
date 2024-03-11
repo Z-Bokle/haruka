@@ -115,13 +115,15 @@ export class MediaService {
     userIdStr: string,
     sessionUUID: string,
   ) {
-    const targetPath = join('statics', 'uploads', userIdStr);
+    const targetPath = join(process.cwd(), 'statics', 'uploads', userIdStr);
     FileManager.createDir(targetPath);
+
+    const baseVideoUUID = getUUID();
 
     await FileManager.writeFile({
       file,
       targetPath,
-      targetName: `${getUUID()}.mp4`,
+      targetName: `${baseVideoUUID}.mp4`,
     });
 
     const userId = parseInt(userIdStr);
@@ -130,11 +132,16 @@ export class MediaService {
       userId,
       sessionUUID,
       {
-        baseVideoFilePath: targetPath,
+        baseVideoFilePath: join(targetPath, `${baseVideoUUID}.mp4`),
+        baseVideoUUID,
       },
     );
 
-    return result;
+    if (result) {
+      return baseVideoUUID;
+    } else {
+      throw new UnexpectedSessionStatusException();
+    }
   }
 
   async getMediaFilePath(sessionUUID: string, resuorceUUID: string) {
@@ -143,6 +150,12 @@ export class MediaService {
       return { path: session.audioFilePath, mime: 'audio/wav', prefix: 'wav' };
     } else if (session?.videoUUID === resuorceUUID) {
       return { path: session.videoFilePath, mime: 'video/mp4', prefix: 'mp4' };
+    } else if (session?.baseVideoUUID === resuorceUUID) {
+      return {
+        path: session.baseVideoFilePath,
+        mime: 'video/mp4',
+        prefix: 'mp4',
+      };
     } else {
       throw new AssetsLostException();
     }
