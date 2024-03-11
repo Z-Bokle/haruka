@@ -3,12 +3,42 @@ import { Dimensions, StyleSheet, View } from 'react-native';
 import { IconButton, ProgressBar, Text } from 'react-native-paper';
 import Video, { VideoProperties } from 'react-native-video';
 
-export interface VideoPlayerProps extends VideoProperties {}
+export interface VideoPlayerProps extends VideoProperties {
+  /** 视频资源的高度，用于计算播放器的大小 */
+  height?: number;
+
+  /** 视频资源的宽度，用于计算播放器的大小 */
+  width?: number;
+}
 
 const VideoPlayer = (props: VideoPlayerProps) => {
   const [isPlaying, setIsPlaying] = useState(false);
   const [duration, setDuration] = useState(0);
   const [currentTime, setCurrentTime] = useState(0);
+
+  const { height, width, ...restProps } = props;
+
+  /** 根据视频宽高比和窗口宽度计算播放器的高度 */
+  const playerHeight = useMemo(() => {
+    if (height && width) {
+      const windowWidth = Dimensions.get('window').width;
+      const w = (height / width) * (windowWidth - 100);
+      if (w > 0) {
+        return w;
+      }
+      return 300;
+    }
+  }, [height, width]);
+
+  const playerContainerExtraStyle = useMemo(
+    () =>
+      StyleSheet.create({
+        extra: {
+          height: playerHeight,
+        },
+      }),
+    [playerHeight],
+  );
 
   const progress = useMemo(() => {
     if (duration === 0) {
@@ -36,9 +66,9 @@ const VideoPlayer = (props: VideoPlayerProps) => {
 
   return (
     <View style={style.container}>
-      <View style={style.videoContainer}>
+      <View style={[style.videoContainer, playerContainerExtraStyle.extra]}>
         <Video
-          {...props}
+          {...restProps}
           resizeMode="contain"
           style={style.video}
           paused={!isPlaying}
@@ -90,7 +120,7 @@ const style = StyleSheet.create({
   },
   videoContainer: {
     width: '100%',
-    height: 200,
+    height: 300,
   },
   controlsConatiner: {
     flex: 1,

@@ -10,7 +10,6 @@ export const useVideoManager = () => {
   const [asset, setAsset] = useState<Asset>();
 
   const getVideoFromLocal = useCallback(async () => {
-    // console.log('getVideoFromLocal');
     const result = await launchImageLibrary({
       mediaType: 'video',
       formatAsMp4: true,
@@ -33,12 +32,10 @@ export const useVideoManager = () => {
   }, []);
 
   const getVideoByCamera = useCallback(async () => {
-    // console.log('getVideoByCamera');
     const result = await launchCamera({
       mediaType: 'video',
       formatAsMp4: true,
       durationLimit: 30,
-      //   saveToPhotos: true,
       cameraType: 'front',
     });
     if (result.didCancel) {

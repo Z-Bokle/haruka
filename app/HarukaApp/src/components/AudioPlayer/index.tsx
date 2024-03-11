@@ -122,9 +122,7 @@ const style = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    // height: 20,
     marginVertical: 10,
-    // backgroundColor: 'red',
   },
   subContainer: {
     flex: 1,

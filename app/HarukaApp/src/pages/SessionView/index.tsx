@@ -379,18 +379,22 @@ const SessionView = () => {
                 disabled={!isVideoEnabled}
                 mode="elevated"
                 onPress={() => getVideoFromLocal()}>
-                从文件选择
+                {asset ? '重新' : '从文件'}选择
               </Button>
               <Button
                 disabled={!isVideoEnabled}
                 mode="elevated"
                 onPress={() => getVideoByCamera()}>
-                录制
+                {asset ? '重新' : '用相机'}录制
               </Button>
             </View>
             {asset && asset.uri && (
               <View>
-                <VideoPlayer source={{ uri: asset.uri }} />
+                <VideoPlayer
+                  source={{ uri: asset.uri }}
+                  width={asset.width}
+                  height={asset.height}
+                />
               </View>
             )}
             {asset && asset.uri && (
@@ -403,7 +407,6 @@ const SessionView = () => {
                 </Button>
               </View>
             )}
-            {session.baseVideoFrame && <Text>预留给视频帧预览</Text>}
           </FormItem>
           {session.baseVideoFrame && (
             <View style={style.inlineSingleButtonView}>
@@ -449,10 +452,6 @@ const style = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     padding: 10,
-  },
-  videoPlayer: {
-    width: '100%',
-    height: 500,
   },
 });
 
