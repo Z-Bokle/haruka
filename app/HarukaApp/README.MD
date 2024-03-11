@@ -14,6 +14,8 @@ Haruka ReactNative 客户端
 10. 进度条 react-native-progress
 11. 音频播放 react-native-sound
 12. 相册资源管理 react-native-image-picker
+13. 视频下载 rn-fetch-blob
+14. 文件管理 react-native-fs（暂未使用）
 
 ## 开发工具
 1. UI调试 react-devtools

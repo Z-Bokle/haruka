@@ -46,7 +46,11 @@ const SessionView = () => {
 
   const { asset, getVideoByCamera, getVideoFromLocal } = useVideoManager();
 
-  const { downloadMediaFile, fileUri } = useCachedMediaManager();
+  const { downloadMediaFile: downloadBaseMediaFile, fileUri: baseFileUri } =
+    useCachedMediaManager();
+
+  const { downloadMediaFile: downloadResultMediaFile, fileUri: resultFileUri } =
+    useCachedMediaManager();
 
   const modelSelectorRef = useRef<ModalSelector>(null);
   const prePromptSelectorRef = useRef<ModalSelector>(null);
@@ -158,19 +162,36 @@ const SessionView = () => {
   }, [formPost, session, asset]);
 
   useEffect(() => {
-    if (session && session.sessionUUID && session.baseVideoUUID) {
-      downloadMediaFile(session?.sessionUUID, session?.baseVideoUUID).then(
+    if (
+      session &&
+      session.sessionUUID &&
+      session.baseVideoUUID &&
+      // 如果有asset存在，此时播放器被本地预览视频占用，此时不需要再下载预览视频
+      !asset?.uri
+    ) {
+      downloadBaseMediaFile(session?.sessionUUID, session?.baseVideoUUID).then(
         () => {
           ToastAndroid.show('预览视频下载成功', ToastAndroid.SHORT);
         },
       );
     }
   }, [
-    downloadMediaFile,
+    asset?.uri,
+    downloadBaseMediaFile,
     session,
     session?.baseVideoUUID,
     session?.sessionUUID,
   ]);
+
+  useEffect(() => {
+    if (session && session.sessionUUID && session.videoUUID) {
+      downloadResultMediaFile(session?.sessionUUID, session?.videoUUID).then(
+        () => {
+          ToastAndroid.show('结果视频下载成功', ToastAndroid.SHORT);
+        },
+      );
+    }
+  }, [downloadResultMediaFile, session]);
 
   return (
     <View style={style.constainer}>
@@ -332,7 +353,7 @@ const SessionView = () => {
           <View style={style.inlineSingleButtonView}>
             <Button
               disabled={!isTextEnabled}
-              mode="elevated"
+              mode="contained"
               onPress={handleGenerateText}
               loading={isGeneratingText}>
               提交并生成文本
@@ -368,7 +389,7 @@ const SessionView = () => {
           <View style={style.inlineSingleButtonView}>
             <Button
               disabled={!isAudioEnabled}
-              mode="elevated"
+              mode="contained"
               loading={isGeneratingAudio}
               onPress={handleGenerateAudio}>
               生成音频
@@ -386,7 +407,7 @@ const SessionView = () => {
             </FormItem>
           )}
 
-          <Divider />
+          <Divider bold />
           <View
             style={style.titleView}
             ref={anchorRefs[2]}
@@ -403,11 +424,11 @@ const SessionView = () => {
             <Text variant="displaySmall">视频</Text>
           </View>
           <FormItem label="原视频" mode="vertical">
-            {((asset && asset.uri) || fileUri) && (
+            {((asset && asset.uri) || baseFileUri) && (
               <View>
                 <VideoPlayer
                   source={{
-                    uri: asset?.uri ?? fileUri,
+                    uri: asset?.uri ?? baseFileUri,
                   }}
                   width={asset?.width}
                   height={asset?.height}
@@ -417,13 +438,13 @@ const SessionView = () => {
             <View style={style.inlineButtonView}>
               <Button
                 disabled={!isVideoEnabled}
-                mode="elevated"
+                mode="contained"
                 onPress={() => getVideoFromLocal()}>
                 {asset || session.baseVideoUUID ? '重新' : '从文件'}选择
               </Button>
               <Button
                 disabled={!isVideoEnabled}
-                mode="elevated"
+                mode="contained"
                 onPress={() => getVideoByCamera()}>
                 {asset || session.baseVideoUUID ? '重新' : '用相机'}录制
               </Button>
@@ -431,19 +452,23 @@ const SessionView = () => {
 
             <View style={style.inlineButtonView}>
               <Button
-                disabled={!isVideoEnabled && !(asset && asset.uri)}
-                mode="elevated"
+                disabled={!isVideoEnabled || !(asset && asset.uri)}
+                mode="contained"
                 onPress={handleUploadBaseVideo}>
                 上传原视频
               </Button>
               <Button
-                disabled={!isVideoEnabled && !session.baseVideoUUID}
-                mode="elevated">
+                disabled={!isVideoEnabled || !session.baseVideoUUID}
+                mode="contained">
                 生成视频
               </Button>
             </View>
           </FormItem>
-          <View style={style.bottomBlock} />
+          {resultFileUri && (
+            <FormItem label="合成的新闻播报">
+              <VideoPlayer source={{ uri: resultFileUri }} />
+            </FormItem>
+          )}
         </ScrollView>
       )}
     </View>
