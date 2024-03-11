@@ -35,7 +35,6 @@ function Sessions({ navigation }) {
   }, [jsonGet]);
 
   const handleCreateSession = useCallback(() => {
-    // TODO 创建会话，在完成Session表单页后实现
     setIsFABLoading(true);
     jsonPost(session.create).then(data => {
       ToastAndroid.show('创建成功', ToastAndroid.LONG);

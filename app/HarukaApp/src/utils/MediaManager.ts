@@ -91,7 +91,7 @@ export const useCachedMediaManager = () => {
       if (response.path()) {
         const uri = `file://${response.path()}`;
         const info = response.info();
-        console.log(info);
+        // console.log(info);
         setFileUri(uri);
         return uri;
       }

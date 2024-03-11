@@ -38,6 +38,8 @@ const SessionView = () => {
   // const [isSaved, setIsSaved] = useState(true);
   const [isGeneratingText, setisGeneratingText] = useState(false);
   const [isGeneratingAudio, setisGeneratingAudio] = useState(false);
+  const [isGeneratingVideo, setisGeneratingVideo] = useState(false);
+  const [isUploadingBaseVideo, setIsUploadingBaseVideo] = useState(false);
 
   const [buttonValue, setButtonValue] = useState('');
 
@@ -138,11 +140,14 @@ const SessionView = () => {
   }, [isGeneratingAudio, jsonPost, session]);
 
   const handleUploadBaseVideo = useCallback(async () => {
+    if (isUploadingBaseVideo) {
+      return;
+    }
     if (!asset || !asset.uri) {
       ToastAndroid.show('未选择资源', ToastAndroid.SHORT);
       return;
     }
-
+    setIsUploadingBaseVideo(true);
     const formData = new FormData();
     formData.append('file', {
       uri: asset.uri,
@@ -159,7 +164,36 @@ const SessionView = () => {
         baseVideoUUID: result,
       }));
     }
-  }, [formPost, session, asset]);
+    setIsUploadingBaseVideo(false);
+  }, [isUploadingBaseVideo, asset, session?.sessionUUID, formPost]);
+
+  const handleGenerateVideo = useCallback(async () => {
+    if (isGeneratingVideo) {
+      return;
+    }
+    if (!session?.baseVideoUUID) {
+      ToastAndroid.show('原视频未就绪，无法合成视频', ToastAndroid.SHORT);
+      return;
+    }
+    setisGeneratingVideo(true);
+    const result = await jsonPost(media.generateVideo, {
+      sessionUUID: session?.sessionUUID,
+    });
+    if (result) {
+      ToastAndroid.show('视频合成成功', ToastAndroid.SHORT);
+      setSession(prevSession => ({
+        ...(prevSession as Session),
+        videoUUID: result,
+        step: 3,
+      }));
+    }
+    setisGeneratingVideo(false);
+  }, [
+    isGeneratingVideo,
+    jsonPost,
+    session?.baseVideoUUID,
+    session?.sessionUUID,
+  ]);
 
   useEffect(() => {
     if (
@@ -454,19 +488,24 @@ const SessionView = () => {
               <Button
                 disabled={!isVideoEnabled || !(asset && asset.uri)}
                 mode="contained"
+                loading={isUploadingBaseVideo}
                 onPress={handleUploadBaseVideo}>
                 上传原视频
               </Button>
               <Button
                 disabled={!isVideoEnabled || !session.baseVideoUUID}
-                mode="contained">
+                loading={isGeneratingVideo}
+                mode="contained"
+                onPress={handleGenerateVideo}>
                 生成视频
               </Button>
             </View>
           </FormItem>
           {resultFileUri && (
-            <FormItem label="合成的新闻播报">
-              <VideoPlayer source={{ uri: resultFileUri }} />
+            <FormItem label="合成的新闻播报" mode="vertical">
+              <View>
+                <VideoPlayer source={{ uri: resultFileUri }} />
+              </View>
             </FormItem>
           )}
         </ScrollView>
@@ -474,6 +513,9 @@ const SessionView = () => {
     </View>
   );
 };
+
+// TODO Session Go Back逻辑
+// TODO useEffect的优化，目前会重复下载视频
 
 const style = StyleSheet.create({
   constainer: {

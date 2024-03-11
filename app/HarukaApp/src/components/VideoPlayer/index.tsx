@@ -72,7 +72,7 @@ const VideoPlayer = (props: VideoPlayerProps) => {
     [currentTime, duration],
   );
 
-  console.log(restProps.source);
+  // console.log(restProps.source);
 
   return (
     <View style={style.container}>
@@ -91,10 +91,11 @@ const VideoPlayer = (props: VideoPlayerProps) => {
             setDuration(result.duration);
           }}
           onProgress={result => {
+            // console.log('progress', result);
             setCurrentTime(result.currentTime);
             setDuration(result.seekableDuration);
           }}
-          onError={err => console.log(err.error)}
+          onError={err => console.error(err.error)}
         />
       </View>
 
