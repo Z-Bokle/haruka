@@ -69,6 +69,7 @@ const AudioPlayer = (props: AudioPlayerProps) => {
       <View style={style.subContainer}>
         <Text style={style.text}>{progressStr}</Text>
         <IconButton
+          mode="contained"
           style={style.icon}
           icon={!sound.isPlaying() ? 'play' : 'pause'}
           onPress={() => {
@@ -99,6 +100,7 @@ const style = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'space-between',
     height: 20,
+    marginVertical: 10,
   },
   subContainer: {
     flex: 1,
