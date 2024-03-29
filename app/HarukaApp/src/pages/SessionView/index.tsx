@@ -40,6 +40,7 @@ const SessionView = () => {
   const [isGeneratingAudio, setisGeneratingAudio] = useState(false);
   const [isGeneratingVideo, setisGeneratingVideo] = useState(false);
   const [isUploadingBaseVideo, setIsUploadingBaseVideo] = useState(false);
+  const [isGoingBack, setIsGoingBack] = useState(false);
 
   const [buttonValue, setButtonValue] = useState('');
 
@@ -195,6 +196,48 @@ const SessionView = () => {
     session?.sessionUUID,
   ]);
 
+  const handleGoBack = useCallback(
+    async (targetStep: 0 | 1 | 2 | 3) => {
+      const getClearItems = (targetStep: number) => {
+        if (targetStep === 2) {
+          return {
+            videoUUID: undefined,
+            baseVideoUUID: undefined,
+          };
+        } else if (targetStep === 1) {
+          return {
+            audioUUID: undefined,
+          };
+        } else if (targetStep === 0) {
+          return {
+            text: undefined,
+            modelId: undefined,
+            prompt: undefined,
+            apiKey: undefined,
+          };
+        }
+      };
+
+      if (isGoingBack) {
+        return;
+      }
+      setIsGoingBack(true);
+      const result = await jsonPost(sessionApi.goback, {
+        sessionUUID: session?.sessionUUID,
+      });
+      if (result) {
+        ToastAndroid.show('返回成功', ToastAndroid.SHORT);
+        setSession(prevSession => ({
+          ...(prevSession as Session),
+          step: targetStep,
+          ...getClearItems(targetStep),
+        }));
+      }
+      setIsGoingBack(false);
+    },
+    [isGoingBack, jsonPost, session?.sessionUUID],
+  );
+
   useEffect(() => {
     if (
       session &&
@@ -299,6 +342,12 @@ const SessionView = () => {
               });
             }}>
             <Text variant="displaySmall">文本</Text>
+            <Button
+              mode="outlined"
+              disabled={!(!isTextEnabled && isAudioEnabled)}
+              onPress={() => handleGoBack(1)}>
+              回到这一步
+            </Button>
           </View>
           <FormItem label="模型">
             <Selector
@@ -418,17 +467,27 @@ const SessionView = () => {
               });
             }}>
             <Text variant="displaySmall">音频</Text>
-          </View>
-
-          <View style={style.inlineSingleButtonView}>
             <Button
-              disabled={!isAudioEnabled}
-              mode="contained"
-              loading={isGeneratingAudio}
-              onPress={handleGenerateAudio}>
-              生成音频
+              mode="outlined"
+              disabled={!(!isAudioEnabled && isVideoEnabled)}
+              onPress={() => {
+                handleGoBack(2);
+              }}>
+              回到这一步
             </Button>
           </View>
+
+          <FormItem label="音频生成">
+            <View style={style.inlineSingleButtonView}>
+              <Button
+                disabled={!isAudioEnabled}
+                mode="contained"
+                loading={isGeneratingAudio}
+                onPress={handleGenerateAudio}>
+                生成音频
+              </Button>
+            </View>
+          </FormItem>
 
           {session.audioUUID && (
             <FormItem label="音频预览" mode="vertical">
@@ -538,6 +597,9 @@ const style = StyleSheet.create({
   },
   titleView: {
     paddingVertical: 8,
+    flexDirection: 'row',
+    flex: 1,
+    justifyContent: 'space-between',
   },
   inlineSingleButtonView: {
     flexDirection: 'row',

@@ -15,13 +15,14 @@ const VideoPlayer = (props: VideoPlayerProps) => {
   const [isPlaying, setIsPlaying] = useState(false);
   const [duration, setDuration] = useState(0);
   const [currentTime, setCurrentTime] = useState(0);
+  const [isLoaded, setIsLoaded] = useState(false);
 
   const [naturalSize, setNaturalSize] = useState({
     width: 0,
     height: 0,
   });
 
-  const { height, width, ...restProps } = props;
+  const { height, width, source, ...restProps } = props;
 
   /** 根据视频宽高比和窗口宽度计算播放器的高度 */
   const playerHeight = useMemo(() => {
@@ -77,26 +78,29 @@ const VideoPlayer = (props: VideoPlayerProps) => {
   return (
     <View style={style.container}>
       <View style={[style.videoContainer, playerContainerExtraStyle.extra]}>
-        <Video
-          {...restProps}
-          resizeMode="contain"
-          style={style.video}
-          paused={!isPlaying}
-          onLoad={result => {
-            setNaturalSize({
-              width: result.naturalSize.width,
-              height: result.naturalSize.height,
-            });
-            setCurrentTime(result.currentTime);
-            setDuration(result.duration);
-          }}
-          onProgress={result => {
-            // console.log('progress', result);
-            setCurrentTime(result.currentTime);
-            setDuration(result.seekableDuration);
-          }}
-          onError={err => console.error(err.error)}
-        />
+        {isLoaded && source && (
+          <Video
+            {...restProps}
+            source={source}
+            resizeMode="contain"
+            style={style.video}
+            paused={!isPlaying}
+            onLoad={result => {
+              setNaturalSize({
+                width: result.naturalSize.width,
+                height: result.naturalSize.height,
+              });
+              setCurrentTime(result.currentTime);
+              setDuration(result.duration);
+            }}
+            onProgress={result => {
+              // console.log('progress', result);
+              setCurrentTime(result.currentTime);
+              setDuration(result.seekableDuration);
+            }}
+            onError={err => console.error(err.error)}
+          />
+        )}
       </View>
 
       <View style={style.controlsConatiner}>
@@ -112,12 +116,23 @@ const VideoPlayer = (props: VideoPlayerProps) => {
           <Text style={style.text}>{progressStr}</Text>
         </View>
 
-        <IconButton
-          style={style.icon}
-          mode="contained"
-          icon={isPlaying ? 'pause' : 'play'}
-          onPress={() => setIsPlaying(!isPlaying)}
-        />
+        {isLoaded ? (
+          <IconButton
+            style={style.icon}
+            mode="contained"
+            icon={isPlaying ? 'pause' : 'play'}
+            onPress={() => setIsPlaying(!isPlaying)}
+          />
+        ) : (
+          <IconButton
+            style={style.icon}
+            mode="contained"
+            icon="download"
+            onPress={() => {
+              setIsLoaded(true);
+            }}
+          />
+        )}
       </View>
     </View>
   );
