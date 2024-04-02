@@ -151,7 +151,7 @@ export class AudioTask extends Task<AudioTaskResult> {
       (resolve, reject) => {
         const scriptFilePath = join(process.cwd(), 'scripts', 'audio.sh');
         const props = [this.text, this.uuid];
-
+        console.log(props);
         try {
           const cp = execFile('bash', [scriptFilePath, ...props]);
 
