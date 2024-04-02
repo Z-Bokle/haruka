@@ -107,7 +107,7 @@ export class TextTask extends Task<string> {
         this.modelName,
       ];
 
-      console.log(props);
+      // console.log(props);
 
       try {
         const cp = execFile('bash', [scriptFilePath, ...props]);
@@ -146,13 +146,44 @@ export class AudioTask extends Task<AudioTaskResult> {
     this.text = text;
   }
 
+  protected runScript() {
+    return new Promise<{ audioUUID: string; audioFilePath: string }>(
+      (resolve, reject) => {
+        const scriptFilePath = join(process.cwd(), 'scripts', 'audio.sh');
+        const props = [this.text, this.uuid];
+
+        try {
+          const cp = execFile('bash', [scriptFilePath, ...props]);
+
+          cp.stdout?.on('data', (out) => {
+            if (out) {
+              const result = {
+                audioUUID: this.uuid,
+                audioFilePath: join(
+                  process.cwd(),
+                  'statics',
+                  'audio',
+                  'example.wav',
+                ),
+              };
+              resolve(result);
+            }
+            reject();
+          });
+          cp.stderr?.on('data', (err) => {
+            reject(err);
+          });
+        } catch (error) {
+          reject(error);
+        }
+      },
+    );
+  }
+
   async doTask() {
     // TODO Audio Task 与路径
     console.log('Audio task', this.text);
-    const result = {
-      audioUUID: this.uuid,
-      audioFilePath: join(process.cwd(), 'statics', 'audio', 'example.wav'),
-    };
+    const result = await this.runScript();
     return result;
   }
 }
