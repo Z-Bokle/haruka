@@ -182,7 +182,7 @@ export class AudioTask extends Task<AudioTaskResult> {
 
   async doTask() {
     // TODO Audio Task 与路径
-    console.log('Audio task', this.text);
+    // console.log('Audio task', this.text);
     const result = await this.runScript();
     return result;
   }
