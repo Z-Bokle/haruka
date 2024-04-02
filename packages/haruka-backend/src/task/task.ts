@@ -163,7 +163,7 @@ export class AudioTask extends Task<AudioTaskResult> {
                   process.cwd(),
                   'statics',
                   'audio',
-                  'example.wav',
+                  `${this.uuid}.wav`,
                 ),
               };
               resolve(result);

@@ -6,7 +6,7 @@ import * as cookieParser from 'cookie-parser';
 import { join } from 'path';
 import { FileManager } from './utils/file';
 
-const PORT = 3000;
+const PORT = 8099;
 
 function logIpInfo() {
   const ipInfo = Object.fromEntries(
