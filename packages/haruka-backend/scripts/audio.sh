@@ -1,3 +1,6 @@
+# $1=text
+# $2=uuid
+
 # write text to file
 touch "'/tmp/haruka/$2.txt'"
 printf "%s\n" $1 > "'/tmp/haruka/$2.txt'"
