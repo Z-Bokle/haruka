@@ -222,7 +222,7 @@ export class VideoTask extends Task<VideoTaskResult> {
         console.log(args);
 
         try {
-          const cp = execFile('sh', [scriptFilePath, ...args], {
+          const cp = execFile('bash', [scriptFilePath, ...args], {
             shell: true,
             cwd: '~/workspace/video-retalking',
           });
