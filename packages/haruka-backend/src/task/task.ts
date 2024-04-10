@@ -214,7 +214,6 @@ export class VideoTask extends Task<VideoTaskResult> {
           `${this.uuid}.mp4`,
         );
         const args = [
-          scriptFilePath,
           this.baseVideoFilePath,
           this.audioFilePath,
           targetFilePath,
