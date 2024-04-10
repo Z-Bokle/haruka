@@ -1,6 +1,6 @@
 import { NotImplementedException } from '@nestjs/common';
 import { getUUID } from 'src/utils/uuid';
-import { execFile, exec, spawn } from 'child_process';
+import { execFile } from 'child_process';
 import { join, posix } from 'path';
 
 export enum TaskType {
@@ -203,13 +203,50 @@ export class VideoTask extends Task<VideoTaskResult> {
     this.audioFilePath = audioFilePath;
   }
 
+  runScript() {
+    return new Promise<{ videoUUID: string; videoFilePath: string }>(
+      (resolve, reject) => {
+        const scriptFilePath = join(process.cwd(), 'scripts', 'video.py');
+        const targetFilePath = join(
+          process.cwd(),
+          'statics',
+          'video',
+          `${this.uuid}.mp4`,
+        );
+        const args = [
+          scriptFilePath,
+          this.baseVideoFilePath,
+          this.audioFilePath,
+          targetFilePath,
+        ];
+
+        try {
+          const cp = execFile('sh', [scriptFilePath, ...args], { shell: true });
+
+          cp.stdout?.on('data', (out) => {
+            if (out) {
+              const result = {
+                videoUUID: this.uuid,
+                videoFilePath: targetFilePath,
+              };
+              console.log('stdout:', out);
+              resolve(result);
+            }
+            reject('error');
+          });
+          cp.stderr?.on('data', (err) => {
+            console.error('stderr:', err.toString('utf8'));
+            // reject(err);
+          });
+        } catch (error) {
+          reject(error);
+        }
+      },
+    );
+  }
+
   async doTask() {
-    // TODO Video Task 与路径
-    console.log('Video task', this.baseVideoFilePath, this.audioFilePath);
-    const result = {
-      videoUUID: this.uuid,
-      videoFilePath: join(process.cwd(), 'statics', 'video', 'example.mp4'),
-    };
+    const result = await this.runScript();
     return result;
   }
 }
