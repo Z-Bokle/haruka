@@ -14,12 +14,14 @@ export class FileManager {
 
     stat(targetPath, (err) => {
       if (err && err.code === 'ENOENT') {
-        throw new Error('保存文件失败，目录不存在');
+        console.error(targetPath);
+        throw new Error(`保存文件失败，目录不存在`);
       }
     });
 
     stat(target, (err) => {
       if (!err) {
+        console.error(target);
         throw new Error('保存文件失败，文件已存在');
       }
     });
