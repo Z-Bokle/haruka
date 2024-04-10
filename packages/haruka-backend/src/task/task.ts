@@ -206,7 +206,7 @@ export class VideoTask extends Task<VideoTaskResult> {
   runScript() {
     return new Promise<{ videoUUID: string; videoFilePath: string }>(
       (resolve, reject) => {
-        const scriptFilePath = join(process.cwd(), 'scripts', 'video.py');
+        const scriptFilePath = join(process.cwd(), 'scripts', 'video.sh');
         const targetFilePath = join(
           process.cwd(),
           'statics',
