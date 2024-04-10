@@ -1,6 +1,6 @@
 import { NotImplementedException } from '@nestjs/common';
 import { getUUID } from 'src/utils/uuid';
-import { execFile } from 'child_process';
+import { execFile, exec, spawn } from 'child_process';
 import { join, posix } from 'path';
 
 export enum TaskType {
@@ -149,34 +149,37 @@ export class AudioTask extends Task<AudioTaskResult> {
   protected runScript() {
     return new Promise<{ audioUUID: string; audioFilePath: string }>(
       (resolve, reject) => {
-        const scriptFilePath = join(process.cwd(), 'scripts', 'audio.sh');
-        const props = [this.text, this.uuid];
-        console.log(scriptFilePath, props);
-        // try {
-        //   const cp = execFile('bash', [scriptFilePath, ...props]);
+        const scriptFilePath = join(process.cwd(), 'scripts', 'audio.py');
+        const targetFilePath = join(
+          process.cwd(),
+          'statics',
+          'audio',
+          `${this.uuid}.wav`,
+        );
+        // 生成的文本可能会有换行符，末尾的换行符会导致shell传递参数时出现错误，因此trim
+        const args = [scriptFilePath, this.text.trim(), targetFilePath];
+        try {
+          const cp = execFile('python3', args, { shell: true });
+          // const cp = spawn('python3', [scriptFilePath, this.text, this,], {shell: true})
 
-        //   cp.stdout?.on('data', (out) => {
-        //     if (out) {
-        //       const result = {
-        //         audioUUID: this.uuid,
-        //         audioFilePath: join(
-        //           process.cwd(),
-        //           'statics',
-        //           'audio',
-        //           `${this.uuid}.wav`,
-        //         ),
-        //       };
-
-        //       resolve(result);
-        //     }
-        //     reject();
-        //   });
-        //   cp.stderr?.on('data', (err) => {
-        //     reject(err);
-        //   });
-        // } catch (error) {
-        //   reject(error);
-        // }
+          cp.stdout?.on('data', (out) => {
+            if (out) {
+              const result = {
+                audioUUID: this.uuid,
+                audioFilePath: targetFilePath,
+              };
+              console.log('stdout:', out);
+              resolve(result);
+            }
+            reject('error');
+          });
+          cp.stderr?.on('data', (err) => {
+            console.error('stderr:', err.toString('utf8'));
+            // reject(err);
+          });
+        } catch (error) {
+          reject(error);
+        }
       },
     );
   }
