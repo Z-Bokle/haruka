@@ -151,31 +151,32 @@ export class AudioTask extends Task<AudioTaskResult> {
       (resolve, reject) => {
         const scriptFilePath = join(process.cwd(), 'scripts', 'audio.sh');
         const props = [this.text, this.uuid];
-        // console.log(props);
-        try {
-          const cp = execFile('bash', [scriptFilePath, ...props]);
+        console.log(scriptFilePath, props);
+        // try {
+        //   const cp = execFile('bash', [scriptFilePath, ...props]);
 
-          cp.stdout?.on('data', (out) => {
-            if (out) {
-              const result = {
-                audioUUID: this.uuid,
-                audioFilePath: join(
-                  process.cwd(),
-                  'statics',
-                  'audio',
-                  `${this.uuid}.wav`,
-                ),
-              };
-              resolve(result);
-            }
-            reject();
-          });
-          cp.stderr?.on('data', (err) => {
-            reject(err);
-          });
-        } catch (error) {
-          reject(error);
-        }
+        //   cp.stdout?.on('data', (out) => {
+        //     if (out) {
+        //       const result = {
+        //         audioUUID: this.uuid,
+        //         audioFilePath: join(
+        //           process.cwd(),
+        //           'statics',
+        //           'audio',
+        //           `${this.uuid}.wav`,
+        //         ),
+        //       };
+
+        //       resolve(result);
+        //     }
+        //     reject();
+        //   });
+        //   cp.stderr?.on('data', (err) => {
+        //     reject(err);
+        //   });
+        // } catch (error) {
+        //   reject(error);
+        // }
       },
     );
   }
