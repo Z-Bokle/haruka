@@ -5,7 +5,10 @@ conda activate video_retalking
 # audioFilePath=$2
 # targetFilePath=$3
 
+echo Video Start
 python3 ~/workspace/video-retalking/inference.py \
   --face "$1" \
   --audio "$2" \
   --outfile "$3"
+
+echo Video End

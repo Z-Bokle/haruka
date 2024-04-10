@@ -219,7 +219,7 @@ export class VideoTask extends Task<VideoTaskResult> {
           targetFilePath,
         ];
 
-        // console.log(args);
+        console.log(args);
 
         try {
           const cp = execFile('sh', [scriptFilePath, ...args], {
