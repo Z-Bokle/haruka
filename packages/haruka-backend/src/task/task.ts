@@ -1,6 +1,6 @@
 import { NotImplementedException } from '@nestjs/common';
 import { getUUID } from 'src/utils/uuid';
-import { execFile } from 'child_process';
+import { execFile, spawn } from 'child_process';
 import { join, posix } from 'path';
 
 export enum TaskType {
@@ -213,8 +213,9 @@ export class VideoTask extends Task<VideoTaskResult> {
       console.log(args);
 
       try {
-        const cp = execFile('bash', [scriptFilePath, ...args], {
+        const cp = spawn('bash', [scriptFilePath, ...args], {
           cwd: '~/workspace/video-retalking',
+          shell: true,
         });
 
         console.log('stdout:', cp.stdout);
