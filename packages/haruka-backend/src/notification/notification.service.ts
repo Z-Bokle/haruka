@@ -1,11 +1,11 @@
 import { Injectable } from '@nestjs/common';
-import { Notification, notificationEmitter } from './notification.controller';
+import { Notification } from './notification.controller';
 
 @Injectable()
 export class NotificationService {
   constructor() {}
 
   async sendNotification(notification: Notification) {
-    notificationEmitter.emit('notification', notification);
+    console.log('send', notification);
   }
 }
