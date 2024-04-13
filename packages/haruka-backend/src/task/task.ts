@@ -214,7 +214,7 @@ export class VideoTask extends Task<VideoTaskResult> {
 
       try {
         const cp = execFile('bash', [scriptFilePath, ...args], {
-          cwd: '~/workspace/video-retalking',
+          // cwd: '~/workspace/video-retalking',
           shell: true,
         });
 
