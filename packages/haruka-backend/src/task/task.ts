@@ -210,28 +210,26 @@ export class VideoTask extends Task<VideoTaskResult> {
       );
       const args = [this.baseVideoFilePath, this.audioFilePath, targetFilePath];
 
-      console.log(scriptFilePath);
+      // console.log(scriptFilePath);
 
       try {
         const cp = execFile('bash', [scriptFilePath, ...args], {
           // cwd: '~/workspace/video-retalking',
           shell: true,
         });
-
+        cp.stdout?.once('close', () => {
+          const result = {
+            videoUUID: this.uuid,
+            videoFilePath: targetFilePath,
+          };
+          resolve(result);
+        });
         cp.stdout?.on('data', (out) => {
           console.log('stdout:', out);
-          if (out) {
-            const result = {
-              videoUUID: this.uuid,
-              videoFilePath: targetFilePath,
-            };
-            resolve(result);
-          }
-          reject('error');
         });
         cp.stderr?.on('data', (err) => {
           console.error('stderr:', err.toString('utf8'));
-          // reject(err);
+          reject(err);
         });
       } catch (error) {
         reject(error);
