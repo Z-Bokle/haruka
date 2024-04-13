@@ -214,7 +214,7 @@ export class VideoTask extends Task<VideoTaskResult> {
 
       try {
         const cp = execFile('bash', [scriptFilePath, ...args], {
-          cwd: join('~', 'workspace', 'video-retalking'),
+          // cwd: join('~', 'workspace', 'video-retalking'),
           shell: true,
         });
         cp.stdout?.once('close', () => {
