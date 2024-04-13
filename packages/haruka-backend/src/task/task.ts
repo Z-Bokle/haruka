@@ -213,15 +213,13 @@ export class VideoTask extends Task<VideoTaskResult> {
       console.log(args);
 
       try {
-        const cp = spawn('bash', [scriptFilePath, ...args], {
+        const cp = execFile('bash', [scriptFilePath, ...args], {
           cwd: '~/workspace/video-retalking',
           shell: true,
         });
 
-        console.log('stdout:', cp.stdout);
-        console.log('pid:', cp.pid);
-
         cp.stdout?.on('data', (out) => {
+          console.log('stdout:', out);
           if (out) {
             const result = {
               videoUUID: this.uuid,
