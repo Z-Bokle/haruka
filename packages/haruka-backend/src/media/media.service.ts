@@ -91,6 +91,8 @@ export class MediaService {
         audioFilePath,
       );
 
+      console.log('视频任务已完成', result);
+
       if (session.step === 2) {
         const { result: stepResult } =
           await this.sessionService.updateSessionStep(userId, sessionUUID, 1);
