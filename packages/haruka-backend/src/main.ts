@@ -52,6 +52,11 @@ async function bootstrap() {
   prepareStaticFileDictionary();
   console.log('服务器端口号：', PORT);
 
+  // 处理未捕获的异步错误，防止因异步任务导致的服务器卡死
+  process.addListener('unhandledRejection', (err) => {
+    console.error(err);
+  });
+
   await app.listen(PORT);
 }
 bootstrap();

@@ -8,7 +8,6 @@ import {
   StreamableFile,
   UploadedFile,
   UseInterceptors,
-  UsePipes,
   Query,
 } from '@nestjs/common';
 import { MediaService } from './media.service';
@@ -20,7 +19,6 @@ import {
 } from './media.dto';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { ApiBody, ApiConsumes, ApiQuery } from '@nestjs/swagger';
-import { FileValidationPipe } from 'src/pipes/filevalidation.pipe';
 import { Request, Response as ExpressResponse } from 'express';
 import {
   FileLostException,

@@ -188,7 +188,7 @@ export class AudioTask extends Task<AudioTaskResult> {
   }
 }
 
-export class VideoTask extends Task<void> {
+export class VideoTask extends Task<VideoTaskResult> {
   /** 可能会有其他参数 */
   private baseVideoFilePath: string;
   private audioFilePath: string;
@@ -240,6 +240,7 @@ export class VideoTask extends Task<void> {
   }
 
   async doTask() {
-    this.runScript();
+    const result = await this.runScript();
+    return result;
   }
 }

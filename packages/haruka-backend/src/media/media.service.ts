@@ -84,26 +84,31 @@ export class MediaService {
       throw new AssetsLostException();
     }
 
-    // 此处是异步任务，在任务完成后服务器会对客户端发送通知，结果不在本次rensponse中返回
-    this.taskService.doVideoTask(baseVideoFilePath, audioFilePath);
+    // 此处是异步任务，任务进度与本次请求无关，结果不在本次rensponse中返回
+    (async () => {
+      const result = await this.taskService.doVideoTask(
+        baseVideoFilePath,
+        audioFilePath,
+      );
 
-    if (session.step === 2) {
-      const { result: stepResult } =
-        await this.sessionService.updateSessionStep(userId, sessionUUID, 1);
-      if (!stepResult) {
+      if (session.step === 2) {
+        const { result: stepResult } =
+          await this.sessionService.updateSessionStep(userId, sessionUUID, 1);
+        if (!stepResult) {
+          throw new UnexpectedSessionStatusException();
+        }
+      }
+
+      const sqlResult = await this.sessionService.updateSession(
+        userId,
+        sessionUUID,
+        result,
+      );
+
+      if (!sqlResult) {
         throw new UnexpectedSessionStatusException();
       }
-    }
-
-    // const sqlResult = await this.sessionService.updateSession(
-    //   userId,
-    //   sessionUUID,
-    //   result,
-    // );
-
-    // if (!sqlResult) {
-    //   throw new UnexpectedSessionStatusException();
-    // }
+    })();
 
     return '任务成功创建';
   }
