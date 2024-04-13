@@ -10,5 +10,6 @@ echo Video Start
 #   --face "$1" \
 #   --audio "$2" \
 #   --outfile "$3"
+ls
 
 echo Video End
