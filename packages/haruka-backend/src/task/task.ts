@@ -201,7 +201,7 @@ export class VideoTask extends Task<VideoTaskResult> {
 
   runScript() {
     return new Promise<VideoTaskResult>((resolve, reject) => {
-      const scriptFilePath = join('~/workspace/video-retalking/video.sh');
+      const scriptFilePath = join(process.cwd(), 'scripts', 'video.sh');
       const targetFilePath = join(
         process.cwd(),
         'statics',
@@ -214,7 +214,7 @@ export class VideoTask extends Task<VideoTaskResult> {
 
       try {
         const cp = execFile('bash', [scriptFilePath, ...args], {
-          // cwd: '',
+          cwd: '~/workspace/video-retalking',
           shell: true,
         });
 
