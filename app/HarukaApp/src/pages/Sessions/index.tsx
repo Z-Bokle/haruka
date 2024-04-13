@@ -10,8 +10,9 @@ import {
 } from 'react-native';
 import SessionCard, { Session } from '../../components/SessionCard';
 import { useNetwork } from '../../utils/Network';
-import { session } from '../../api';
+import { notification, session } from '../../api';
 import { ActivityIndicator, AnimatedFAB } from 'react-native-paper';
+import { ServerSentEventHelper } from '../../utils/ServerSendEvent';
 
 function Sessions({ navigation }) {
   const [sessions, setSessions] = useState<Session[]>([]);
@@ -25,6 +26,14 @@ function Sessions({ navigation }) {
   useEffect(() => {
     jsonGet(session.list).then(res => setSessions(res));
   }, [jsonGet]);
+
+  useEffect(() => {
+    const helper = new ServerSentEventHelper(notification.notification);
+    helper
+      .getSource()
+      .addEventListener('open', () => console.log('Connect SSE'));
+    helper.getSource().addEventListener('message', event => console.log(event));
+  }, []);
 
   const handleRefresh = useCallback(() => {
     setRefreshing(true);

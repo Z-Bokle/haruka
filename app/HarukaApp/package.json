@@ -28,6 +28,7 @@
     "react-native-screens": "^3.29.0",
     "react-native-sensitive-info": "^6.0.0-alpha.9",
     "react-native-sound": "^0.11.2",
+    "react-native-sse": "^1.2.1",
     "react-native-vector-icons": "^10.0.3",
     "react-native-video": "^5.2.1",
     "rn-fetch-blob": "^0.12.0",
