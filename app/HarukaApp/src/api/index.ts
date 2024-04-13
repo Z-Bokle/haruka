@@ -25,7 +25,3 @@ export const media = {
   uploadBaseVideo: '/media/video/base/upload',
   stream: '/media/stream',
 };
-
-export const notification = {
-  connect: '/notification/connect',
-};
