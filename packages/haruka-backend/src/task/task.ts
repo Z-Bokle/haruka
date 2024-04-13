@@ -218,13 +218,15 @@ export class VideoTask extends Task<VideoTaskResult> {
           cwd: '~/workspace/video-retalking',
         });
 
+        console.log('stdout:', cp.stdout);
+        console.log('pid:', cp.pid);
+
         cp.stdout?.on('data', (out) => {
           if (out) {
             const result = {
               videoUUID: this.uuid,
               videoFilePath: targetFilePath,
             };
-            console.log('stdout:', out);
             resolve(result);
           }
           reject('error');
