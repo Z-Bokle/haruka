@@ -229,7 +229,8 @@ export class VideoTask extends Task<VideoTaskResult> {
         });
         cp.stderr?.on('data', (err) => {
           console.error('stderr:', err.toString('utf8'));
-          reject(err);
+          // reject(err);
+          // 该脚本运行的时候会有一些不影响功能的stderr，不能reject
         });
       } catch (error) {
         reject(error);
