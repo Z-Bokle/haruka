@@ -84,10 +84,8 @@ export class MediaService {
       throw new AssetsLostException();
     }
 
-    const result = await this.taskService.doVideoTask(
-      baseVideoFilePath,
-      audioFilePath,
-    );
+    // 此处是异步任务，在任务完成后服务器会对客户端发送通知，结果不在本次rensponse中返回
+    this.taskService.doVideoTask(baseVideoFilePath, audioFilePath);
 
     if (session.step === 2) {
       const { result: stepResult } =
@@ -97,17 +95,17 @@ export class MediaService {
       }
     }
 
-    const sqlResult = await this.sessionService.updateSession(
-      userId,
-      sessionUUID,
-      result,
-    );
+    // const sqlResult = await this.sessionService.updateSession(
+    //   userId,
+    //   sessionUUID,
+    //   result,
+    // );
 
-    if (!sqlResult) {
-      throw new UnexpectedSessionStatusException();
-    }
+    // if (!sqlResult) {
+    //   throw new UnexpectedSessionStatusException();
+    // }
 
-    return result;
+    return '任务成功创建';
   }
 
   async uploadFile(

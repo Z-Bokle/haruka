@@ -177,16 +177,16 @@ const SessionView = () => {
       return;
     }
     setisGeneratingVideo(true);
-    const result = await jsonPost(media.generateVideo, {
+    const msg = await jsonPost(media.generateVideo, {
       sessionUUID: session?.sessionUUID,
     });
-    if (result) {
-      ToastAndroid.show('视频合成成功', ToastAndroid.SHORT);
-      setSession(prevSession => ({
-        ...(prevSession as Session),
-        videoUUID: result,
-        step: 3,
-      }));
+    if (msg) {
+      ToastAndroid.show(msg, ToastAndroid.SHORT);
+      // setSession(prevSession => ({
+      //   ...(prevSession as Session),
+      //   videoUUID: result,
+      //   step: 3,
+      // }));
     }
     setisGeneratingVideo(false);
   }, [
@@ -573,7 +573,6 @@ const SessionView = () => {
   );
 };
 
-// TODO Session Go Back逻辑
 // TODO useEffect的优化，目前会重复下载视频
 
 const style = StyleSheet.create({

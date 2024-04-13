@@ -147,52 +147,48 @@ export class AudioTask extends Task<AudioTaskResult> {
   }
 
   protected runScript() {
-    return new Promise<{ audioUUID: string; audioFilePath: string }>(
-      (resolve, reject) => {
-        const scriptFilePath = join(process.cwd(), 'scripts', 'audio.py');
-        const targetFilePath = join(
-          process.cwd(),
-          'statics',
-          'audio',
-          `${this.uuid}.wav`,
-        );
-        // 生成的文本可能会有换行符，末尾的换行符会导致shell传递参数时出现错误，因此trim
-        const args = [scriptFilePath, this.text.trim(), targetFilePath];
-        try {
-          const cp = execFile('python3', args, { shell: true });
-          // const cp = spawn('python3', [scriptFilePath, this.text, this,], {shell: true})
+    return new Promise<AudioTaskResult>((resolve, reject) => {
+      const scriptFilePath = join(process.cwd(), 'scripts', 'audio.py');
+      const targetFilePath = join(
+        process.cwd(),
+        'statics',
+        'audio',
+        `${this.uuid}.wav`,
+      );
+      // 生成的文本可能会有换行符，末尾的换行符会导致shell传递参数时出现错误，因此trim
+      const args = [scriptFilePath, this.text.trim(), targetFilePath];
+      try {
+        const cp = execFile('python3', args, { shell: true });
+        // const cp = spawn('python3', [scriptFilePath, this.text, this,], {shell: true})
 
-          cp.stdout?.on('data', (out) => {
-            if (out) {
-              const result = {
-                audioUUID: this.uuid,
-                audioFilePath: targetFilePath,
-              };
-              console.log('stdout:', out);
-              resolve(result);
-            }
-            reject('error');
-          });
-          cp.stderr?.on('data', (err) => {
-            console.error('stderr:', err.toString('utf8'));
-            // reject(err);
-          });
-        } catch (error) {
-          reject(error);
-        }
-      },
-    );
+        cp.stdout?.on('data', (out) => {
+          if (out) {
+            const result = {
+              audioUUID: this.uuid,
+              audioFilePath: targetFilePath,
+            };
+            console.log('stdout:', out);
+            resolve(result);
+          }
+          reject('error');
+        });
+        cp.stderr?.on('data', (err) => {
+          console.error('stderr:', err.toString('utf8'));
+          // reject(err);
+        });
+      } catch (error) {
+        reject(error);
+      }
+    });
   }
 
   async doTask() {
-    // TODO Audio Task 与路径
-    // console.log('Audio task', this.text);
     const result = await this.runScript();
     return result;
   }
 }
 
-export class VideoTask extends Task<VideoTaskResult> {
+export class VideoTask extends Task<void> {
   /** 可能会有其他参数 */
   private baseVideoFilePath: string;
   private audioFilePath: string;
@@ -204,53 +200,46 @@ export class VideoTask extends Task<VideoTaskResult> {
   }
 
   runScript() {
-    return new Promise<{ videoUUID: string; videoFilePath: string }>(
-      (resolve, reject) => {
-        const scriptFilePath = join('video.sh');
-        const targetFilePath = join(
-          process.cwd(),
-          'statics',
-          'video',
-          `${this.uuid}.mp4`,
-        );
-        const args = [
-          this.baseVideoFilePath,
-          this.audioFilePath,
-          targetFilePath,
-        ];
+    return new Promise<VideoTaskResult>((resolve, reject) => {
+      const scriptFilePath = join('video.sh');
+      const targetFilePath = join(
+        process.cwd(),
+        'statics',
+        'video',
+        `${this.uuid}.mp4`,
+      );
+      const args = [this.baseVideoFilePath, this.audioFilePath, targetFilePath];
 
-        console.log(args);
+      console.log(args);
 
-        try {
-          const cp = execFile('bash', [scriptFilePath, ...args], {
-            shell: true,
-            cwd: '~/workspace/video-retalking',
-          });
+      try {
+        const cp = execFile('bash', [scriptFilePath, ...args], {
+          shell: true,
+          cwd: '~/workspace/video-retalking',
+        });
 
-          cp.stdout?.on('data', (out) => {
-            if (out) {
-              const result = {
-                videoUUID: this.uuid,
-                videoFilePath: targetFilePath,
-              };
-              console.log('stdout:', out);
-              resolve(result);
-            }
-            reject('error');
-          });
-          cp.stderr?.on('data', (err) => {
-            console.error('stderr:', err.toString('utf8'));
-            // reject(err);
-          });
-        } catch (error) {
-          reject(error);
-        }
-      },
-    );
+        cp.stdout?.on('data', (out) => {
+          if (out) {
+            const result = {
+              videoUUID: this.uuid,
+              videoFilePath: targetFilePath,
+            };
+            console.log('stdout:', out);
+            resolve(result);
+          }
+          reject('error');
+        });
+        cp.stderr?.on('data', (err) => {
+          console.error('stderr:', err.toString('utf8'));
+          // reject(err);
+        });
+      } catch (error) {
+        reject(error);
+      }
+    });
   }
 
   async doTask() {
-    const result = await this.runScript();
-    return result;
+    this.runScript();
   }
 }
