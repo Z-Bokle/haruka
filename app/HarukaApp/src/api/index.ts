@@ -27,5 +27,5 @@ export const media = {
 };
 
 export const notification = {
-  notification: '/notification',
+  connect: '/notification/connect',
 };

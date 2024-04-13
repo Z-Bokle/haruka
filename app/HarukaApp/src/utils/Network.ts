@@ -152,5 +152,6 @@ export const useNetwork = () => {
     jsonPost,
     formPost,
     baseUrl,
+    token,
   };
 };

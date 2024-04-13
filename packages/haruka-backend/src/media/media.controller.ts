@@ -67,7 +67,7 @@ export class MediaController {
     const userId = parseInt(userIdStr as string);
 
     const result = await this.mediaService.generateVideo(sessionUUID, userId);
-    return result.videoUUID;
+    return result;
   }
 
   // @UsePipes(

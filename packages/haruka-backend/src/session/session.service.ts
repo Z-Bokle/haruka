@@ -5,6 +5,7 @@ import {
   SessionNotFoundException,
   UnexpectedSessionStatusException,
 } from 'src/exceptions/exceptions';
+import { NotificationService } from 'src/notification/notification.service';
 import { UserService } from 'src/user/user.service';
 import { getUUID } from 'src/utils/uuid';
 import { Repository } from 'typeorm';
@@ -15,9 +16,14 @@ export class SessionService {
     private readonly userService: UserService,
     @InjectRepository(Session)
     private readonly sessionRepository: Repository<Session>,
+    private readonly notificationService: NotificationService,
   ) {}
 
   async getSessionList(userId: number) {
+    this.notificationService.sendNotification({
+      message: 'msg',
+      title: 'ttt',
+    });
     const list = await this.findAll({ userId, isAvailable: 1 });
     return list;
   }
